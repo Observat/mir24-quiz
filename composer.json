@@ -1,0 +1,32 @@
+{
+    "name": "observatby/mir24-quiz",
+    "description": "Серия вопросов с картинками и вариантами ответов",
+    "version": "0.0.1",
+    "type": "library",
+    "homepage": "https://github.com/Observat/mir24-quiz",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Обловацкий Юрий",
+            "email": "jury@observat.by",
+            "homepage": "http://observat.by/"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Observatby\\Mir24Quiz\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/Observat/mir24-quiz"
+        }
+    ]
+}
