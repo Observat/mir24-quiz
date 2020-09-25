@@ -24,6 +24,11 @@
             "Observatby\\Mir24Quiz\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Observatby\\Mir24Quiz\\Tests\\": "tests/"
+        }
+    },
     "repositories": [
         {
             "type": "git",
