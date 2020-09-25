@@ -8,6 +8,7 @@ class QuizQuestion
 {
     private Id $id;
     private string $text;
+    private Image $image;
     /** @var QuizAnswer[] $answers */
     private array $answers;
 
@@ -15,12 +16,14 @@ class QuizQuestion
      * QuizQuestion constructor.
      * @param Id $id
      * @param string $text
+     * @param Image $image
      * @param QuizAnswer[] $answers
      */
-    public function __construct(Id $id, string $text, array $answers)
+    public function __construct(Id $id, string $text, Image $image, array $answers)
     {
         $this->id = $id;
         $this->text = $text;
+        $this->image = $image;
         $this->answers = $answers;
     }
 

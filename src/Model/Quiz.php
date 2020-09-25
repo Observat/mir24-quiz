@@ -7,19 +7,23 @@ namespace Observatby\Mir24Quiz\Model;
 class Quiz
 {
     private Id $id;
+    private string $title;
     /** @var QuizQuestion[] $questions */
     private array $questions;
 
     /**
      * Quiz constructor.
      * @param Id $id
+     * @param string $title
      * @param QuizQuestion[] $questions
      */
-    public function __construct(Id $id, array $questions)
+    public function __construct(Id $id, string $title, array $questions)
     {
         $this->id = $id;
+        $this->title = $title;
         $this->questions = $questions;
     }
+
 
     public function hasQuestion(QuizQuestion $searchedQuestion): bool
     {

@@ -3,6 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests;
 
 use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
 
@@ -13,6 +14,7 @@ trait CreateQuizTrait
         return new QuizQuestion(
             Id::createNew(),
             'This first question?',
+            new Image(''),
             [
                 $answer1 ?? $this->createQuizAnswer_yes_true(),
                 $answer2 ?? $this->createQuizAnswer_no_false()
@@ -25,6 +27,7 @@ trait CreateQuizTrait
         return new QuizQuestion(
             Id::createNew(),
             'This no second question?',
+            new Image(''),
             [
                 $answer1 ?? $this->createQuizAnswer_yes_false(),
                 $answer2 ?? $this->createQuizAnswer_no_true()

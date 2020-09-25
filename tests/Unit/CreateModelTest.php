@@ -21,6 +21,7 @@ class CreateModelTest extends TestCase
     {
         $quiz = new Quiz(
             Id::createNew(),
+            'First quiz',
             [
                 $this->createQuizQuestion_1(),
                 $this->createQuizQuestion_2(),
@@ -34,6 +35,7 @@ class CreateModelTest extends TestCase
     {
         $quiz = new Quiz(
             Id::createNew(),
+            'First quiz',
             [
                 $this->createQuizQuestion_1(),
                 $this->createQuizQuestion_2(),

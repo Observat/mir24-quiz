@@ -6,6 +6,7 @@ namespace Observatby\Mir24Quiz\Tests\Unit;
 
 
 use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
 use Observatby\Mir24Quiz\Model\ReceivedAnswer;
@@ -30,6 +31,7 @@ class CheckReceivedQuizTest extends TestCase
 
         $quiz = new Quiz(
             Id::createNew(),
+            'First quiz',
             [
                 $question1,
                 $question2,
@@ -92,6 +94,7 @@ class CheckReceivedQuizTest extends TestCase
         $question3 = new QuizQuestion(
             Id::createNew(),
             'This is third question?',
+            new Image(''),
             [
                 $answer3True,
                 $answer3False
