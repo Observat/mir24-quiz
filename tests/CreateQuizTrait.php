@@ -8,32 +8,32 @@ use Observatby\Mir24Quiz\Model\QuizQuestion;
 
 trait CreateQuizTrait
 {
-    private function createQuizQuestion_1(): QuizQuestion
+    private function createQuizQuestion_1(?QuizAnswer $answer1 = null, ?QuizAnswer $answer2 = null): QuizQuestion
     {
         return new QuizQuestion(
             Id::createNew(),
             'This first question?',
             [
-                $this->createQuizAnswer_yes_1(),
-                $this->createQuizAnswer_no_0()
+                $answer1 ?? $this->createQuizAnswer_yes_true(),
+                $answer2 ?? $this->createQuizAnswer_no_false()
             ]
         );
     }
 
-    private function createQuizQuestion_2(): QuizQuestion
+    private function createQuizQuestion_2(?QuizAnswer $answer1 = null, ?QuizAnswer $answer2 = null): QuizQuestion
     {
         return new QuizQuestion(
             Id::createNew(),
             'This no second question?',
             [
-                $this->createQuizAnswer_yes_0(),
-                $this->createQuizAnswer_no_1()
+                $answer1 ?? $this->createQuizAnswer_yes_false(),
+                $answer2 ?? $this->createQuizAnswer_no_true()
             ]
         );
 
     }
 
-    private function createQuizAnswer_yes_1(): QuizAnswer
+    private function createQuizAnswer_yes_true(): QuizAnswer
     {
         return new QuizAnswer(
             Id::createNew(),
@@ -42,7 +42,7 @@ trait CreateQuizTrait
         );
     }
 
-    private function createQuizAnswer_yes_0(): QuizAnswer
+    private function createQuizAnswer_yes_false(): QuizAnswer
     {
         return new QuizAnswer(
             Id::createNew(),
@@ -51,7 +51,7 @@ trait CreateQuizTrait
         );
     }
 
-    private function createQuizAnswer_no_0(): QuizAnswer
+    private function createQuizAnswer_no_false(): QuizAnswer
     {
         return new QuizAnswer(
             Id::createNew(),
@@ -60,7 +60,7 @@ trait CreateQuizTrait
         );
     }
 
-    private function createQuizAnswer_no_1(): QuizAnswer
+    private function createQuizAnswer_no_true(): QuizAnswer
     {
         return new QuizAnswer(
             Id::createNew(),

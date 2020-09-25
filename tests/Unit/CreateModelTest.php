@@ -32,18 +32,27 @@ class CreateModelTest extends TestCase
 
     public function testCreateReceivedQuiz()
     {
+        $quiz = new Quiz(
+            Id::createNew(),
+            [
+                $this->createQuizQuestion_1(),
+                $this->createQuizQuestion_2(),
+            ]
+        );
+
         $resQuiz = new ReceivedQuiz(
             Id::createNew(),
+            $quiz,
             [
                 new ReceivedAnswer(
                     Id::createNew(),
                     $this->createQuizQuestion_1(),
-                    $this->createQuizAnswer_yes_1()
+                    $this->createQuizAnswer_yes_true()
                 ),
                 new ReceivedAnswer(
                     Id::createNew(),
                     $this->createQuizQuestion_1(),
-                    $this->createQuizAnswer_no_1()
+                    $this->createQuizAnswer_no_true()
                 )
             ]
         );
