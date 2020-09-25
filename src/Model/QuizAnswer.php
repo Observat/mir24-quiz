@@ -10,12 +10,6 @@ class QuizAnswer
     private bool $correct;
     private string $text;
 
-    /**
-     * QuizAnswer constructor.
-     * @param Id $id
-     * @param bool $correct
-     * @param string $text
-     */
     public function __construct(Id $id, bool $correct, string $text)
     {
         $this->id = $id;
@@ -23,16 +17,18 @@ class QuizAnswer
         $this->text = $text;
     }
 
+    public function getId(): Id
+    {
+        return $this->id;
+    }
+
     public function isCorrect(): bool
     {
         return $this->correct;
     }
 
-    /**
-     * @return Id
-     */
-    public function getId(): Id
+    public function getText(): string
     {
-        return $this->id;
+        return $this->text;
     }
 }

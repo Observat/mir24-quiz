@@ -24,6 +24,23 @@ class Quiz
         $this->questions = $questions;
     }
 
+    public function getId(): Id
+    {
+        return $this->id;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return QuizQuestion[]
+     */
+    public function getQuestions(): array
+    {
+        return $this->questions;
+    }
 
     public function hasQuestion(QuizQuestion $searchedQuestion): bool
     {

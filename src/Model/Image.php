@@ -16,4 +16,10 @@ class Image
     {
         $this->src = $src;
     }
+
+    public function getSrc(): string
+    {
+        return $this->src;
+    }
+
 }

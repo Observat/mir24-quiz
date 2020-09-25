@@ -32,6 +32,24 @@ class QuizQuestion
         return $this->id;
     }
 
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getImage(): Image
+    {
+        return $this->image;
+    }
+
+    /**
+     * @return QuizAnswer[]
+     */
+    public function getAnswers(): array
+    {
+        return $this->answers;
+    }
+
     public function hasAnswer(QuizAnswer $searchedAnswer): bool
     {
         $searchedAnswerDbId = $searchedAnswer->getId()->toDb();
