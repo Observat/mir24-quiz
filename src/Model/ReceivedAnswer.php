@@ -6,17 +6,26 @@ namespace Observatby\Mir24Quiz\Model;
 
 class ReceivedAnswer
 {
+    private Id $id;
     private QuizQuestion $question;
     private QuizAnswer $answer;
 
     /**
      * ReceivedAnswer constructor.
+     * @param Id $id
      * @param QuizQuestion $question
      * @param QuizAnswer $answer
      */
-    public function __construct(QuizQuestion $question, QuizAnswer $answer)
+    public function __construct(Id $id, QuizQuestion $question, QuizAnswer $answer)
     {
+        $this->id = $id;
         $this->question = $question;
         $this->answer = $answer;
+    }
+
+
+    public function isCorrect(): bool
+    {
+        return $this->isCorrect() && $this->question->hasAnswer($this->answer);
     }
 }
