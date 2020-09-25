@@ -20,4 +20,17 @@ class Quiz
         $this->id = $id;
         $this->questions = $questions;
     }
+
+    public function hasQuestion(QuizQuestion $searchedQuestion): bool
+    {
+        $searchedQuestionDbId = $searchedQuestion->getId()->toDb();
+        foreach ($this->questions as $question) {
+            if ($question->getId()->toDb() === $searchedQuestionDbId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

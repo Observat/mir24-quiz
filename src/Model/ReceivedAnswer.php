@@ -24,8 +24,10 @@ class ReceivedAnswer
     }
 
 
-    public function isCorrect(): bool
+    public function isCorrect(Quiz $quiz): bool
     {
-        return $this->isCorrect() && $this->question->hasAnswer($this->answer);
+        return $quiz->hasQuestion($this->question)
+            && $this->question->hasAnswer($this->answer)
+            && $this->answer->isCorrect();
     }
 }

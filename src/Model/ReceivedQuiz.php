@@ -28,7 +28,11 @@ class ReceivedQuiz
     {
         $cnt = 0;
 
-        # TODO
+        foreach ($this->receivedAnswers as $receivedAnswer) {
+            if ($receivedAnswer->isCorrect($this->quiz)) {
+                $cnt++;
+            }
+        }
 
         return $cnt;
     }

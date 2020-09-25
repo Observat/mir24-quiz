@@ -24,6 +24,11 @@ class QuizQuestion
         $this->answers = $answers;
     }
 
+    public function getId(): Id
+    {
+        return $this->id;
+    }
+
     public function hasAnswer(QuizAnswer $searchedAnswer): bool
     {
         $searchedAnswerDbId = $searchedAnswer->getId()->toDb();
