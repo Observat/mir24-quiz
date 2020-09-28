@@ -32,6 +32,11 @@ class PublishingManagement
         $this->endedPublicationDate = $endedPublicationDate;
     }
 
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
     public function isActive(): bool
     {
         return $this->enabled

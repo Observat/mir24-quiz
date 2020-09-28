@@ -10,4 +10,5 @@ class QuizDto
     public string $title;
     /** @var QuestionDto[] $questions */
     public array $questions;
+    public ?PublishingManagementDto $management = null;
 }

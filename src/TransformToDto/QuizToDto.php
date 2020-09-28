@@ -5,13 +5,14 @@ namespace Observatby\Mir24Quiz\TransformToDto;
 
 
 use Observatby\Mir24Quiz\Dto\AnswerDto;
+use Observatby\Mir24Quiz\Dto\PublishingManagementDto;
 use Observatby\Mir24Quiz\Dto\QuestionDto;
 use Observatby\Mir24Quiz\Dto\QuizDto;
 use Observatby\Mir24Quiz\Model\Quiz;
 
 class QuizToDto
 {
-    public static function transform(Quiz $quiz): QuizDto
+    public static function transformForUse(Quiz $quiz): QuizDto
     {
         $quizDto = new QuizDto();
         $quizDto->id = $quiz->getId()->toDb();
@@ -41,4 +42,22 @@ class QuizToDto
 
         return $quizDto;
     }
+
+    public static function transformForChange(Quiz $quiz): QuizDto
+    {
+        $quizDto = self::transformForUse($quiz);
+
+        $management = $quiz->getPublishingManagement();
+        if($management) {
+            $managementDto = new PublishingManagementDto();
+            $managementDto->enabled = $management->isEnabled();
+            $managementDto->beginDate = $management->getDelayedPublicationDate();
+            $managementDto->endDate = $management->getEndedPublicationDate();
+
+            $quizDto->management = $managementDto;
+        }
+
+        return $quizDto;
+    }
+
 }
