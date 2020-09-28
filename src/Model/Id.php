@@ -27,7 +27,7 @@ class Id
         return new self(self::createFactory()->uuid4());
     }
 
-    public static function fromDb($idFromDb): self
+    public static function fromDb(string $idFromDb): self
     {
         return new self(Uuid::fromBytes($idFromDb));
     }
