@@ -10,11 +10,6 @@ use Observatby\Mir24Quiz\Repository\PersistenceInterface;
 
 class DummyPersistence implements PersistenceInterface
 {
-    public function generateId(): Id
-    {
-        return Id::createNew();
-    }
-
     public function persist(array $data): void
     {
         // dummy

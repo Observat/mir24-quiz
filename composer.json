@@ -14,6 +14,7 @@
     ],
     "require": {
         "php": ">=7.4",
+        "ext-pdo": "*",
         "ramsey/uuid": "^3",
         "moontoast/math": "^1.2"
     },
