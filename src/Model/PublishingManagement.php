@@ -14,11 +14,30 @@ class PublishingManagement
     private ?DateTimeImmutable $delayedPublicationDate;
     private ?DateTimeImmutable $endedPublicationDate;
 
+    /**
+     * PublishingManagement constructor.
+     * @param bool $enabled
+     * @param DateTimeImmutable|null $delayedPublicationDate
+     * @param DateTimeImmutable|null $endedPublicationDate
+     * @throws QuizException
+     */
     public function __construct(bool $enabled, ?DateTimeImmutable $delayedPublicationDate, ?DateTimeImmutable $endedPublicationDate)
     {
+        if (!$this->isCorrectPublicationTimeRange($delayedPublicationDate, $endedPublicationDate)) {
+            throw new QuizException(QuizException::INCORRECT_PUBLICATION_TIME_RANGE);
+        }
+
         $this->enabled = $enabled;
         $this->delayedPublicationDate = $delayedPublicationDate;
         $this->endedPublicationDate = $endedPublicationDate;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->enabled
+            && $this->delayedPublicationDate !== null
+            && $this->delayedPublicationDate <= new DateTimeImmutable('now')
+            && ($this->endedPublicationDate === null || $this->endedPublicationDate > new DateTimeImmutable('now'));
     }
 
     public function enable(): self
