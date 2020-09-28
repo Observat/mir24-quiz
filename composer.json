@@ -14,7 +14,8 @@
     ],
     "require": {
         "php": ">=7.4",
-        "ramsey/uuid": "^4.1"
+        "ramsey/uuid": "^3",
+        "moontoast/math": "^1.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0"
