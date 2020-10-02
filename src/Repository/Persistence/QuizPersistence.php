@@ -13,8 +13,18 @@ use PDOException;
 class QuizPersistence implements PersistenceInterface
 {
     private PDO $pdo;
-    private const QUERY = "SELECT title
+    private const QUERY = "SELECT
+                               quiz.id as quiz_id,
+                               quiz.title as quiz_title,
+                               quiz_question.id as question_id,
+                               quiz_question.text as question_text,
+                               quiz_question.image_src as question_image_src,
+                               quiz_answer.id as answer_id,
+                               quiz_answer.text as answer_text,
+                               quiz_answer.correct as answer_correct,
                            FROM quiz
+                           INNER JOIN quiz_question ON quiz_question.quiz_id = quiz.id
+                           INNER JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
                            WHERE id = ?";
 
     public function __construct(PDO $pdo)

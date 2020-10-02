@@ -5,13 +5,13 @@ namespace Observatby\Mir24Quiz\Repository;
 
 
 use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\Quiz;
-use Observatby\Mir24Quiz\Tests\CreateQuizTrait;
+use Observatby\Mir24Quiz\Model\QuizAnswer;
+use Observatby\Mir24Quiz\Model\QuizQuestion;
 
 class QuizRepository
 {
-    use CreateQuizTrait;
-
     private PersistenceInterface $persistence;
 
     public function __construct(PersistenceInterface $persistence)
@@ -21,15 +21,41 @@ class QuizRepository
 
     public function findById(Id $id): Quiz
     {
-        $row = $this->persistence->retrieve($id);
+        $rows = $this->persistence->retrieve($id);
+
+        $answers = [];
+        $questionRows = [];
+        foreach ($rows as $row) {
+            if (!key_exists($row['question_id'], $questionRows)) {
+                $questionRows[$row['question_id']] = [
+                    'text' => $row['question_text'],
+                    'src' => $row['question_image_src'],
+                ];
+                $answers[$row['question_id']] = [];
+            }
+
+            $answers[$row['question_id']][] = new QuizAnswer(
+                Id::fromDb($row['answer_id']),
+                $row['answer_correct'],
+                $row['answer_text']
+            );
+        }
+
+        $questions = [];
+        foreach ($questionRows as $questionId => $questionRow) {
+            $questions[] = new QuizQuestion(
+                Id::fromDb($questionId),
+                $questionRow['text'],
+                new Image($questionRow['src']),
+                $answers[$questionId]
+            );
+        }
 
         return new Quiz(
             $id,
-            $row['title'],
-            [
-                $this->createQuizQuestion_1(), # TODO
-            ],
-            null
+            $rows[0]['quiz_title'],
+            $questions,
+            null # TODO
         );
     }
 }
