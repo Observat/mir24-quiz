@@ -4,7 +4,7 @@ Initially used `"ramsey/uuid": "^4"`, but for laravel 6 is required `"ramsey/uui
 
 ## Use
 
-`
+```
 $useCase = GetQuizDtoFromRawDbIdForEditing::createWithPdo($pdo);
 $quizDtoForEditing = $useCase->handle($idFromDb);
-`
+```
