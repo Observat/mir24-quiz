@@ -11,7 +11,7 @@ use Observatby\Mir24Quiz\Repository\QuizRepository;
 use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
 use PDO;
 
-class GetQuizDtoFromRawDbIdForUsing
+class GetQuizDtoFromRawDbIdForEditing
 {
     private QuizRepository $repository;
 
@@ -36,6 +36,6 @@ class GetQuizDtoFromRawDbIdForUsing
 
         $quiz = $this->repository->findById($id);
 
-        return QuizToDto::transformForUse($quiz);
+        return QuizToDto::transformForChange($quiz);
     }
 }

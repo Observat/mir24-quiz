@@ -2,15 +2,17 @@
 
 namespace Observatby\Mir24Quiz\Tests\UseCase;
 
+use DateTimeImmutable;
 use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
 use Observatby\Mir24Quiz\Tests\CreateQuizTrait;
-use Observatby\Mir24Quiz\UseCase\GetQuizDtoFromRawDbIdForUsing;
+use Observatby\Mir24Quiz\UseCase\GetQuizDtoFromRawDbIdForEditing;
 use PHPUnit\Framework\TestCase;
 
 
-class GetQuizDtoFromRawDbIdForUsingTest extends TestCase
+class GetQuizDtoFromRawDbIdForEditingTest extends TestCase
 {
     use CreateQuizTrait;
 
@@ -27,16 +29,14 @@ class GetQuizDtoFromRawDbIdForUsingTest extends TestCase
                 [
                     $this->createQuizQuestion_1(),
                     $this->createQuizQuestion_2(),
-                ]
+                ],
+                new PublishingManagement(true, new DateTimeImmutable('now - 1 week'), new DateTimeImmutable('now + 1 week')),
             ));
 
-        $quizDto = GetQuizDtoFromRawDbIdForUsing::createWithRepository($mockRepository)
+        $quizDto = GetQuizDtoFromRawDbIdForEditing::createWithRepository($mockRepository)
             ->handle($id->toDb());
 
         $this->assertEquals("First quiz", $quizDto->title);
-        $this->assertEquals('This no second question?', ($quizDto->questions)[1]->text);
-        $this->assertEquals('No', (($quizDto->questions)[1]->answers)[1]->text);
-        $this->assertTrue((($quizDto->questions)[1]->answers)[1]->correct);
-        $this->assertNull($quizDto->management);
+        $this->assertNotNull($quizDto->management);
     }
 }
