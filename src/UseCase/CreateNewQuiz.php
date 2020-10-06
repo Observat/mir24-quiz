@@ -4,9 +4,11 @@
 namespace Observatby\Mir24Quiz\UseCase;
 
 
-use Observatby\Mir24Quiz\Dto\QuizDto;
+use Exception;
+use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
+use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
 
 class CreateNewQuiz
 {
@@ -27,8 +29,18 @@ class CreateNewQuiz
         return new self($repository);
     }
 
-    public function handle(QuizDto $quizDto): void
+    /**
+     * @param array $data
+     * @throws QuizException
+     */
+    public function handle(array $data): void
     {
+        try {
+            $quizDto = QuizToDto::transformFromArray($data);
+        } catch (Exception $e) {
+            throw new QuizException(QuizException::INPUT_ARRAY_AND_OUTPUT_DTO_MISMATCH);
+        }
+
         $this->repository->create($quizDto);
     }
 }
