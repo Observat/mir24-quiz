@@ -9,6 +9,7 @@ use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
 use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
+use PDO;
 
 class CreateNewQuiz
 {
