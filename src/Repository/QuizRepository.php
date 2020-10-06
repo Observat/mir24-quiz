@@ -4,6 +4,7 @@
 namespace Observatby\Mir24Quiz\Repository;
 
 
+use Observatby\Mir24Quiz\Dto\QuizDto;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\Quiz;
@@ -57,5 +58,18 @@ class QuizRepository
             $questions,
             null # TODO
         );
+    }
+
+    public function create(QuizDto $quizDto): void
+    {
+        $this->persistence->persist([
+            'id' => $quizDto->id ?? Id::createNew()->toDb(),
+            'title' => $quizDto->title
+        ]);
+    }
+
+    public function update(): void
+    {
+        // TODO
     }
 }
