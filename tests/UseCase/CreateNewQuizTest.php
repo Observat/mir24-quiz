@@ -3,7 +3,6 @@
 namespace Observatby\Mir24Quiz\Tests\UseCase;
 
 use DateTimeImmutable;
-use Observatby\Mir24Quiz\Dto\QuizDto;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\InMemoryPersistence;
@@ -31,16 +30,44 @@ class CreateNewQuizTest extends TestCase
         $repository = new QuizRepository($persistence);
         $id = Id::createNew();
 
-        $quizDto = new QuizDto();
-        $quizDto->id = $id->toDb();
-        $quizDto->title = "New quiz";
+        $data = [
+            'id' => $id->toDb(),
+            'title' => 'New quiz',
+            'questions' => [
+                [
+                    'id' => Id::createNew()->toDb(),
+                    'text' => 'question_text',
+                    'imageSrc' => 'question_image_src',
+                    'answers' => [
+                        [
+                            'id' => Id::createNew()->toDb(),
+                            'text' => 'answer_text1',
+                            'correct' => true,
+                        ],
+                        [
+                            'id' => Id::createNew()->toDb(),
+                            'text' => 'answer_text2',
+                            'correct' => false,
+                        ],
+                    ],
+                ]
+            ],
+            'management' => [
+                'enabled' => true,
+                'beginDate' => (new DateTimeImmutable('now - 1 day')),
+                'endDate' => (new DateTimeImmutable('now + 1 day')),
+            ]
+        ];
 
-        CreateNewQuiz::createWithRepository($repository)->handle($quizDto);
+        CreateNewQuiz::createWithRepository($repository)->handle($data);
 
         $quizDtoSaved = $persistence->retrieve($id);
         $this->assertEquals("New quiz", $quizDtoSaved['title']);
+        $this->assertEquals("answer_text2", $quizDtoSaved['questions'][0]['answers'][1]['text']);
 
-// TODO        $quizFounded = $repository->findById($id);
-//        $this->assertEquals("New quiz", $quizFounded->getTitle());
+
+        $quizFounded = $repository->findById($id);
+        $this->assertEquals("New quiz", $quizFounded->getTitle());
+        $this->assertEquals("answer_text2", $quizFounded->getQuestions()[0]->getAnswers()[1]->getText());
     }
 }
