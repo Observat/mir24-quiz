@@ -48,7 +48,7 @@ class QuizToDto
         $quizDto = self::transformForUse($quiz);
 
         $management = $quiz->getPublishingManagement();
-        if($management) {
+        if ($management) {
             $managementDto = new PublishingManagementDto();
             $managementDto->enabled = $management->isEnabled();
             $managementDto->beginDate = $management->getDelayedPublicationDate();
@@ -60,4 +60,43 @@ class QuizToDto
         return $quizDto;
     }
 
+    public static function transformFromArray(array $data): QuizDto
+    {
+        $quizDto = new QuizDto();
+        $quizDto->id = $data['id'];
+        $quizDto->title = $data['title'];
+
+        $questionsDto = [];
+        foreach ($data['questions'] as $question) {
+            $questionDto = new QuestionDto();
+            $questionDto->id = $question['id'];
+            $questionDto->text = $question['text'];
+            $questionDto->imageSrc = $question['imageSrc'];
+
+            $answersDto = [];
+            foreach ($question['answers'] as $answer) {
+                $answerDto = new AnswerDto();
+                $answerDto->id = $answer['id'];
+                $answerDto->text = $answer['text'];
+                $answerDto->correct = $answer['correct'];
+
+                $answersDto[] = $answerDto;
+            }
+            $questionDto->answers = $answersDto;
+
+            $questionsDto[] = $questionDto;
+        }
+        $quizDto->questions = $questionsDto;
+
+        if (array_key_exists('management', $data)) {
+            $managementDto = new PublishingManagementDto();
+            $managementDto->enabled = $data['management']['enabled'];
+            $managementDto->beginDate = $data['management']['beginDate'];
+            $managementDto->endDate = $data['management']['endDate'];
+
+            $quizDto->management = $managementDto;
+        }
+
+        return $quizDto;
+    }
 }
