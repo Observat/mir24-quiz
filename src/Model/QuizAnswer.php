@@ -4,6 +4,8 @@
 namespace Observatby\Mir24Quiz\Model;
 
 
+use Observatby\Mir24Quiz\Dto\AnswerDto;
+
 class QuizAnswer
 {
     private Id $id;
@@ -15,6 +17,11 @@ class QuizAnswer
         $this->id = $id;
         $this->correct = $correct;
         $this->text = $text;
+    }
+
+    public static function fromDto(AnswerDto $dto): self
+    {
+        return new self(Id::fromDb($dto->id), $dto->correct, $dto->text);
     }
 
     public function getId(): Id

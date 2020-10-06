@@ -4,6 +4,9 @@
 namespace Observatby\Mir24Quiz\Model;
 
 
+use Observatby\Mir24Quiz\Dto\QuestionDto;
+use Observatby\Mir24Quiz\Dto\QuizDto;
+
 class Quiz
 {
     private Id $id;
@@ -25,6 +28,21 @@ class Quiz
         $this->title = $title;
         $this->questions = $questions;
         $this->publishingManagement = $publishingManagement;
+    }
+
+    public static function fromDto(QuizDto $dto): self
+    {
+        return new self(
+            Id::fromDb($dto->id),
+            $dto->title,
+            array_map(
+                function (QuestionDto $questionDto) {
+                    return QuizQuestion::fromDto($questionDto);
+                },
+                $dto->questions
+            ),
+            null # TODO
+        );
     }
 
     public function getId(): Id
