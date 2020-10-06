@@ -32,9 +32,19 @@ class Id
         return new self(Uuid::fromBytes($idFromDb));
     }
 
+    public static function fromString(string $idDisplayed): self
+    {
+        return new self(Uuid::fromString($idDisplayed));
+    }
+
     public function toDb(): string
     {
         return $this->id->getBytes();
+    }
+
+    public function toString(): string
+    {
+        return $this->id->toString();
     }
 
     /**

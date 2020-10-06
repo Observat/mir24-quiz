@@ -49,7 +49,7 @@ class QuizPersistence implements PersistenceInterface
             throw new QuizException(QuizException::DATABASE_IS_NOT_PREPARED);
         }
 
-        $sth->execute([$id]);
+        $sth->execute([$id->toDb()]);
         $res = $sth->fetch(PDO::FETCH_ASSOC);
         $sth->closeCursor();
 
