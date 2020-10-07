@@ -25,8 +25,8 @@ class ListOfQuizRepository
         $quizzes = [];
         foreach ($rows as $row) {
             $quizDto = new QuizMinForListOfQuizDto();
-            $quizDto->id = $row['id'];
-            $quizDto->title = $row['title'];
+            $quizDto->id = $row['quiz_id'];
+            $quizDto->title = $row['quiz_title'];
 
             $quizzes[] = $quizDto;
         }
