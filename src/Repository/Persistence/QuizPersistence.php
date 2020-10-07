@@ -74,7 +74,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         }
 
         $sth->execute();
-        $res = $sth->fetch(PDO::FETCH_ASSOC);
+        $res = $sth->fetchAll(PDO::FETCH_ASSOC);
         $sth->closeCursor();
 
         return $res;

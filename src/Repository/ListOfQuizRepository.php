@@ -6,6 +6,8 @@ namespace Observatby\Mir24Quiz\Repository;
 
 use Observatby\Mir24Quiz\Dto\ListOfQuizDto;
 use Observatby\Mir24Quiz\Dto\QuizMinForListOfQuizDto;
+use Observatby\Mir24Quiz\Model\Id;
+
 
 class ListOfQuizRepository
 {
@@ -25,7 +27,7 @@ class ListOfQuizRepository
         $quizzes = [];
         foreach ($rows as $row) {
             $quizDto = new QuizMinForListOfQuizDto();
-            $quizDto->id = $row['quiz_id'];
+            $quizDto->id = Id::fromDb($row['quiz_id'])->toString();
             $quizDto->title = $row['quiz_title'];
 
             $quizzes[] = $quizDto;
