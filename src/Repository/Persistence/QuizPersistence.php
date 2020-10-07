@@ -7,13 +7,18 @@ namespace Observatby\Mir24Quiz\Repository\Persistence;
 use Exception;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\QuizException;
+use Observatby\Mir24Quiz\Repository\ListPersistenceInterface;
 use Observatby\Mir24Quiz\Repository\PersistenceInterface;
 use PDO;
 use PDOException;
 
-class QuizPersistence implements PersistenceInterface
+class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
 {
     private PDO $pdo;
+    private const QUERY_LIST = "SELECT
+                               quiz.id as quiz_id,
+                               quiz.title as quiz_title
+                           FROM quiz";
     private const QUERY = "SELECT
                                quiz.id as quiz_id,
                                quiz.title as quiz_title,
@@ -50,6 +55,25 @@ class QuizPersistence implements PersistenceInterface
         }
 
         $sth->execute([$id->toDb()]);
+        $res = $sth->fetch(PDO::FETCH_ASSOC);
+        $sth->closeCursor();
+
+        return $res;
+    }
+
+    /**
+     * @return array
+     * @throws QuizException
+     */
+    public function retrieveList(): array
+    {
+        try {
+            $sth = $this->pdo->prepare(self::QUERY_LIST);
+        } catch (PDOException $e) {
+            throw new QuizException(QuizException::DATABASE_IS_NOT_PREPARED);
+        }
+
+        $sth->execute();
         $res = $sth->fetch(PDO::FETCH_ASSOC);
         $sth->closeCursor();
 
