@@ -1,9 +1,12 @@
 <?php declare(strict_types=1);
 
+namespace Observatby\Mir24Quiz\Tests\Unit;
+
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 class QuizRepositoryTest extends TestCase

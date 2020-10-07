@@ -34,7 +34,7 @@ class GetQuizDtoFromRawDbIdForEditingTest extends TestCase
             ));
 
         $quizDto = GetQuizDtoFromRawDbIdForEditing::createWithRepository($mockRepository)
-            ->handle($id->toDb());
+            ->handle($id);
 
         $this->assertEquals("First quiz", $quizDto->title);
         $this->assertNotNull($quizDto->management);

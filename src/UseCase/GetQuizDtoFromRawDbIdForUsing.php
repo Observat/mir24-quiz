@@ -30,10 +30,8 @@ class GetQuizDtoFromRawDbIdForUsing
         return new self($repository);
     }
 
-    public function handle(string $rawDbId): QuizDto
+    public function handle(Id $id): QuizDto
     {
-        $id = Id::fromDb($rawDbId);
-
         $quiz = $this->repository->findById($id);
 
         return QuizToDto::transformForUse($quiz);

@@ -31,7 +31,7 @@ class GetQuizDtoFromRawDbIdForUsingTest extends TestCase
             ));
 
         $quizDto = GetQuizDtoFromRawDbIdForUsing::createWithRepository($mockRepository)
-            ->handle($id->toDb());
+            ->handle($id);
 
         $this->assertEquals("First quiz", $quizDto->title);
         $this->assertEquals('This no second question?', ($quizDto->questions)[1]->text);
