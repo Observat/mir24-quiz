@@ -15,7 +15,7 @@ class InMemoryPersistence implements PersistenceInterface
 
     public function persist(array $data): void
     {
-        $this->inMemory[$data['id']] = $data;
+        $this->inMemory[$data['quiz']['id']] = $data;
     }
 
     public function retrieve(Id $id): array

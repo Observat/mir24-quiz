@@ -27,11 +27,11 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
                                quiz_question.image_src as question_image_src,
                                quiz_answer.id as answer_id,
                                quiz_answer.text as answer_text,
-                               quiz_answer.correct as answer_correct,
+                               quiz_answer.correct as answer_correct
                            FROM quiz
                            INNER JOIN quiz_question ON quiz_question.quiz_id = quiz.id
                            INNER JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
-                           WHERE id = ?";
+                           WHERE quiz.id = ?";
     private const QUERY_INSERT = "INSERT INTO quiz(id, title) values (?, ?);";
 
     public function __construct(PDO $pdo)
@@ -55,8 +55,12 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         }
 
         $sth->execute([$id->toDb()]);
-        $res = $sth->fetch(PDO::FETCH_ASSOC);
+        $res = $sth->fetchAll(PDO::FETCH_ASSOC);
         $sth->closeCursor();
+
+        if ($res === false) {
+            throw new QuizException(QuizException::NOT_FOUND_QUIZ_IN_DATABASE);
+        }
 
         return $res;
     }
@@ -88,18 +92,22 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
      */
     public function persist(array $data): void
     {
+        $dbh = $this->pdo;
         try {
-            $dbh = $this->pdo;
-            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $dbh->beginTransaction();
-
-            $this->persistQuiz($data);
-            $this->persistQuestions($data);
-            $this->persistAnswers($data);
-
-            $dbh->commit();
+            $sth = $this->pdo->prepare(self::QUERY_INSERT);
+            if ($sth->execute([$data['quiz']['id'], $data['quiz']['title']])
+                && $this->multiInsert('quiz_question', ['id', 'text', 'image_src', 'quiz_id'], $data['questions'])
+                && $this->multiInsert('quiz_answer', ['id', 'text', 'correct', 'question_id'], $data['answers'])
+            ) {
+                $dbh->commit();
+            } else {
+                $dbh->rollBack();
+                throw new QuizException(QuizException::NOT_CREATED_IN_DATABASE);
+            }
         } catch (Exception $e) {
             $dbh->rollBack();
+            # TODO log
             throw new QuizException(QuizException::NOT_CREATED_IN_DATABASE);
         }
     }
@@ -109,21 +117,30 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         // TODO: Implement delete() method.
     }
 
-
-    private function persistQuiz(array $data): void
+    private function multiInsert(string $table, array $fields, array $data): bool
     {
-        $sth = $this->pdo->prepare(self::QUERY_INSERT);
+        $params = [];
 
-        $sth->execute([$data['id'], $data['title']]);
-    }
+        $i = 0;
+        $sthTexts = [];
+        foreach ($data as $d) {
+            $keys = [];
+            foreach ($fields as $field) {
+                $key = ':i' . $i . $field;
+                $keys[] = $key;
+                $params[$key] = $d[$field];
+            }
+            $sthTexts[] = '(' . implode(',', $keys) . ')';
+            $i++;
+        }
+        $sthText = sprintf(
+            'insert into %s (%s) values %s;',
+            $table,
+            implode(',', $fields),
+            implode(',', $sthTexts)
+        );
 
-    private function persistQuestions(array $data): void
-    {
-        // TODO
-    }
-
-    private function persistAnswers(array $data): void
-    {
-        // TODO
+        $stmt = $this->pdo->prepare($sthText);
+        return $stmt->execute($params);
     }
 }

@@ -15,20 +15,20 @@ class QuizToDto
     public static function transformForUse(Quiz $quiz): QuizDto
     {
         $quizDto = new QuizDto();
-        $quizDto->id = $quiz->getId()->toDb();
+        $quizDto->id = $quiz->getId()->toString();
         $quizDto->title = $quiz->getTitle();
 
         $questionsDto = [];
         foreach ($quiz->getQuestions() as $question) {
             $questionDto = new QuestionDto();
-            $questionDto->id = $question->getId()->toDb();
+            $questionDto->id = $question->getId()->toString();
             $questionDto->text = $question->getText();
             $questionDto->imageSrc = $question->getImage()->getSrc();
 
             $answersDto = [];
             foreach ($question->getAnswers() as $answer) {
                 $answerDto = new AnswerDto();
-                $answerDto->id = $answer->getId()->toDb();
+                $answerDto->id = $answer->getId()->toString();
                 $answerDto->text = $answer->getText();
                 $answerDto->correct = $answer->isCorrect();
 

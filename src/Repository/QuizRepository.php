@@ -4,16 +4,12 @@
 namespace Observatby\Mir24Quiz\Repository;
 
 
-use Observatby\Mir24Quiz\Dto\AnswerDto;
-use Observatby\Mir24Quiz\Dto\QuestionDto;
 use Observatby\Mir24Quiz\Dto\QuizDto;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
-use Observatby\Mir24Quiz\Repository\Persistence\InMemoryPersistence;
-use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
 
 class QuizRepository
 {
@@ -27,11 +23,6 @@ class QuizRepository
     public function findById(Id $id): Quiz
     {
         $rows = $this->persistence->retrieve($id);
-
-        # InMemoryPersistence and QuizPersistence has diff in returned array
-        if ($this->persistence instanceof InMemoryPersistence) {
-            return Quiz::fromDto(QuizToDto::transformFromArray($rows));
-        }
 
         $answers = [];
         $questionRows = [];
@@ -71,24 +62,38 @@ class QuizRepository
 
     public function create(QuizDto $quizDto): void
     {
-        $this->persistence->persist([
+        $quizArr = [
             'id' => $quizDto->id ?? Id::createNew()->toDb(),
-            'title' => $quizDto->title,
-            'questions' => array_map(function (QuestionDto $questionDto) {
-                return [
-                    'id' => $questionDto->id ?? Id::createNew()->toDb(),
-                    'text' => $questionDto->text,
-                    'imageSrc' => $questionDto->imageSrc,
-                    'answers' => array_map(function (AnswerDto $answerDto) {
-                        return [
-                            'id' => $answerDto->id ?? Id::createNew()->toDb(),
-                            'text' => $answerDto->text,
-                            'correct' => $answerDto->correct
-                        ];
-                    }, $questionDto->answers),
+            'title' => $quizDto->title
+        ];
+
+        $questionsArr = [];
+        $answersArr = [];
+        foreach ($quizDto->questions as $questionDto) {
+            $question = [
+                'id' => $questionDto->id ?? Id::createNew()->toDb(),
+                'text' => $questionDto->text,
+                'image_src' => $questionDto->imageSrc,
+                'quiz_id' => $quizArr['id'],
+            ];
+
+            foreach ($questionDto->answers as $answerDto) {
+                $answersArr[] = [
+                    'id' => $answerDto->id ?? Id::createNew()->toDb(),
+                    'text' => $answerDto->text,
+                    'correct' => $answerDto->correct ? 1 : 0,
+                    'question_id' => $question['id'],
                 ];
-            }, $quizDto->questions),
-            # TODO management
+            }
+            $questionsArr[] = $question;
+        }
+
+        # TODO management
+
+        $this->persistence->persist([
+            'quiz' => $quizArr,
+            'questions' => $questionsArr,
+            'answers' => $answersArr,
         ]);
     }
 
