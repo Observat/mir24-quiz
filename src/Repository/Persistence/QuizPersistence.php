@@ -99,6 +99,8 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
             if ($sth->execute([$data['quiz']['id'], $data['quiz']['title']])
                 && $this->multiInsert('quiz_question', ['id', 'text', 'image_src', 'quiz_id'], $data['questions'])
                 && $this->multiInsert('quiz_answer', ['id', 'text', 'correct', 'question_id'], $data['answers'])
+                && $this->deleteNotIn('quiz_question', 'quiz_id', [$data['quiz']['id']], 'id', array_column($data['questions'], 'id'))
+                && $this->deleteNotIn('quiz_answer', 'question_id', array_column($data['questions'], 'id'), 'id', array_column($data['answers'], 'id'))
             ) {
                 $dbh->commit();
             } else {
@@ -142,5 +144,20 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
 
         $stmt = $this->pdo->prepare($sthText);
         return $stmt->execute($params);
+    }
+
+    private function deleteNotIn(string $table, string $includedField, array $included, string $excludedField, array $excluded): bool
+    {
+        $sthText = sprintf(
+            'DELETE FROM %s WHERE %s IN (%s) AND %s NOT IN (%s);',
+            $table,
+            $includedField,
+            implode(',', array_fill(0, count($included), '?')),
+            $excludedField,
+            implode(',', array_fill(0, count($excluded), '?'))
+        );
+
+        $stmt = $this->pdo->prepare($sthText);
+        return $stmt->execute(array_merge($included, $excluded));
     }
 }
