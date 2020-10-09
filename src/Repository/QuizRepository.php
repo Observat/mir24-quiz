@@ -97,8 +97,8 @@ class QuizRepository
         ]);
     }
 
-    public function update(): void
+    public function update(QuizDto $quizDto): void
     {
-        // TODO
+        $this->create($quizDto);
     }
 }

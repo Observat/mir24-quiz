@@ -32,7 +32,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
                            INNER JOIN quiz_question ON quiz_question.quiz_id = quiz.id
                            INNER JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
                            WHERE quiz.id = ?";
-    private const QUERY_INSERT = "INSERT INTO quiz(id, title) values (?, ?);";
+    private const QUERY_INSERT = "INSERT INTO quiz(id, title) values (?, ?) ON DUPLICATE KEY UPDATE title=?;";
 
     public function __construct(PDO $pdo)
     {
@@ -85,8 +85,6 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
     }
 
     /**
-     * TODO Add support for update
-     *
      * @param array $data
      * @throws QuizException
      */
@@ -96,11 +94,11 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         try {
             $dbh->beginTransaction();
             $sth = $this->pdo->prepare(self::QUERY_INSERT);
-            if ($sth->execute([$data['quiz']['id'], $data['quiz']['title']])
+            if ($sth->execute([$data['quiz']['id'], $data['quiz']['title'], $data['quiz']['title']])
                 && $this->multiInsert('quiz_question', ['id', 'text', 'image_src', 'quiz_id'], $data['questions'])
                 && $this->multiInsert('quiz_answer', ['id', 'text', 'correct', 'question_id'], $data['answers'])
-                && $this->deleteNotIn('quiz_question', 'quiz_id', [$data['quiz']['id']], 'id', array_column($data['questions'], 'id'))
-                && $this->deleteNotIn('quiz_answer', 'question_id', array_column($data['questions'], 'id'), 'id', array_column($data['answers'], 'id'))
+// TODO               && $this->deleteNotIn('quiz_question', 'quiz_id', [$data['quiz']['id']], 'id', array_column($data['questions'], 'id'))
+// TODO               && $this->deleteNotIn('quiz_answer', 'question_id', array_column($data['questions'], 'id'), 'id', array_column($data['answers'], 'id'))
             ) {
                 $dbh->commit();
             } else {
@@ -109,7 +107,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
             }
         } catch (Exception $e) {
             $dbh->rollBack();
-            # TODO log
+            # TODO LoggerInterface::error($e->getMessage());
             throw new QuizException(QuizException::NOT_CREATED_IN_DATABASE);
         }
     }
@@ -119,35 +117,44 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         // TODO: Implement delete() method.
     }
 
-    private function multiInsert(string $table, array $fields, array $data): bool
+    private function multiInsert(string $table, array $insertFields, array $data): bool
     {
-        $params = [];
+        $insertPlaceholder = [];
+        $insertValues = [];
+        $updateValues = [];
+        $updateFieldsWithPlaceholders = [];
 
         $i = 0;
-        $sthTexts = [];
         foreach ($data as $d) {
-            $keys = [];
-            foreach ($fields as $field) {
-                $key = ':i' . $i . $field;
-                $keys[] = $key;
-                $params[$key] = $d[$field];
+            $insertKeys = [];
+            foreach ($insertFields as $field) {
+                $insertKey = ':i' . $i . $field;
+                $insertKeys[] = $insertKey;
+                $insertValues[$insertKey] = $d[$field];
+
+                $updateKey = ':u' . $i . $field;
+                $updateValues[$updateKey] = $d[$field];
+                $updateFieldsWithPlaceholders[] = $field . '=' . $updateKey;
             }
-            $sthTexts[] = '(' . implode(',', $keys) . ')';
+            $insertPlaceholder[] = '(' . implode(',', $insertKeys) . ')';
             $i++;
         }
         $sthText = sprintf(
-            'insert into %s (%s) values %s;',
+            'INSERT INTO %s (%s) VALUES %s ON DUPLICATE KEY UPDATE %s',
             $table,
-            implode(',', $fields),
-            implode(',', $sthTexts)
+            implode(',', $insertFields),
+            implode(',', $insertPlaceholder),
+            implode(',', $updateFieldsWithPlaceholders),
         );
 
         $stmt = $this->pdo->prepare($sthText);
-        return $stmt->execute($params);
+        return $stmt->execute(array_merge($insertValues, $updateValues));
     }
 
     private function deleteNotIn(string $table, string $includedField, array $included, string $excludedField, array $excluded): bool
     {
+        # TODO soft delete: update set active=0
+        # TODO on delete cascade
         $sthText = sprintf(
             'DELETE FROM %s WHERE %s IN (%s) AND %s NOT IN (%s);',
             $table,
