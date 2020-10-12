@@ -99,12 +99,22 @@ class QuizRepository
             $questionsArr[] = $question;
         }
 
-        # TODO management
+        $management = [];
+        $managementDto = $quizDto->management;
+        if ($managementDto !== null) {
+            $management = [
+                'quiz_id' => $quizDto->id ? Id::fromString($quizDto->id)->toDb() : Id::createNew()->toDb(),
+                'enable' => $managementDto->enabled,
+                'beginDatetime' => $managementDto->beginDate->format("Y-m-d H:i:s"),
+                'endDatetime' => $managementDto->endDate->format("Y-m-d H:i:s")
+            ];
+        }
 
         $this->persistence->persist([
             'quiz' => $quizArr,
             'questions' => $questionsArr,
             'answers' => $answersArr,
+            'management' => $management,
         ]);
     }
 

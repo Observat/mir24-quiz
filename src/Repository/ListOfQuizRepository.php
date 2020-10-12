@@ -4,6 +4,7 @@
 namespace Observatby\Mir24Quiz\Repository;
 
 
+use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\ListOfQuizDto;
 use Observatby\Mir24Quiz\Dto\QuizMinForListOfQuizDto;
 use Observatby\Mir24Quiz\Model\Id;
@@ -30,8 +31,8 @@ class ListOfQuizRepository
             $quizDto->id = Id::fromDb($row['quiz_id'])->toString();
             $quizDto->title = $row['quiz_title'];
             $quizDto->enabled = $row['enabled'];
-            $quizDto->beginDate = $row['begin_date'];
-            $quizDto->endDate = $row['end_date'];
+            $quizDto->beginDate = new DateTimeImmutable($row['begin_date']);
+            $quizDto->endDate = new DateTimeImmutable($row['end_date']);
 
             $quizzes[] = $quizDto;
         }
