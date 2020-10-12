@@ -33,7 +33,7 @@ class QuizQuestion
     public static function fromDto(QuestionDto $dto): self
     {
         return new self(
-            Id::fromDb($dto->id),
+            Id::fromString($dto->id),
             $dto->text,
             new Image($dto->imageSrc),
             array_map(function (AnswerDto $answerDto) {
@@ -67,9 +67,9 @@ class QuizQuestion
 
     public function hasAnswer(QuizAnswer $searchedAnswer): bool
     {
-        $searchedAnswerDbId = $searchedAnswer->getId()->toDb();
+        $searchedAnswerDbId = $searchedAnswer->getId()->toString();
         foreach ($this->answers as $answer) {
-            if ($answer->getId()->toDb() === $searchedAnswerDbId) {
+            if ($answer->getId()->toString() === $searchedAnswerDbId) {
                 return true;
             }
         }

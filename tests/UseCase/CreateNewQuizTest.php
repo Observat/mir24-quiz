@@ -31,21 +31,21 @@ class CreateNewQuizTest extends TestCase
         $id = Id::createNew();
 
         $data = [
-            'id' => $id->toDb(),
+            'id' => $id->toString(),
             'title' => 'New quiz',
             'questions' => [
                 [
-                    'id' => Id::createNew()->toDb(),
+                    'id' => Id::createNew()->toString(),
                     'text' => 'question_text',
                     'imageSrc' => 'question_image_src',
                     'answers' => [
                         [
-                            'id' => Id::createNew()->toDb(),
+                            'id' => Id::createNew()->toString(),
                             'text' => 'answer_text1',
                             'correct' => true,
                         ],
                         [
-                            'id' => Id::createNew()->toDb(),
+                            'id' => Id::createNew()->toString(),
                             'text' => 'answer_text2',
                             'correct' => false,
                         ],

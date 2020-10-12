@@ -21,7 +21,10 @@ class QuizAnswer
 
     public static function fromDto(AnswerDto $dto): self
     {
-        return new self(Id::fromDb($dto->id), $dto->correct, $dto->text);
+        return new self(
+            Id::fromString($dto->id),
+            $dto->correct,
+            $dto->text);
     }
 
     public function getId(): Id

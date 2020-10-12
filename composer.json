@@ -19,6 +19,7 @@
         "moontoast/math": "^1.2"
     },
     "require-dev": {
+        "ext-json": "*",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {

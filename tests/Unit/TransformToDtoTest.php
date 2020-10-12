@@ -53,7 +53,7 @@ class TransformToDtoTest extends TestCase
         $dto = QuizToDto::transformForChange($quiz);
 
         $this->assertIsString($dto->id);
-        $this->assertGreaterThan(1, strlen($dto->id));
+        $this->assertMatchesRegularExpression('/[\w\d]{8}\-[\w\d]{4}\-[\w\d]{4}\-[\w\d]{4}\-[\w\d]{12}/', $dto->id);
         $this->assertEquals('First quiz', $dto->title);
         $this->assertEquals('This no second question?', ($dto->questions)[1]->text);
         $this->assertEquals('No', (($dto->questions)[1]->answers)[1]->text);
@@ -65,21 +65,21 @@ class TransformToDtoTest extends TestCase
     public function testTransformQuizFromArray()
     {
         $data = [
-            'id' => Id::createNew()->toDb(),
+            'id' => Id::createNew()->toString(),
             'title' => 'quiz_title',
             'questions' => [
                 [
-                    'id' => Id::createNew()->toDb(),
+                    'id' => Id::createNew()->toString(),
                     'text' => 'question_text',
                     'imageSrc' => 'question_image_src',
                     'answers' => [
                         [
-                            'id' => Id::createNew()->toDb(),
+                            'id' => Id::createNew()->toString(),
                             'text' => 'answer_text1',
                             'correct' => true,
                         ],
                         [
-                            'id' => Id::createNew()->toDb(),
+                            'id' => Id::createNew()->toString(),
                             'text' => 'answer_text2',
                             'correct' => false,
                         ],

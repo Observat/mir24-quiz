@@ -63,7 +63,7 @@ class QuizRepository
     public function create(QuizDto $quizDto): void
     {
         $quizArr = [
-            'id' => $quizDto->id ?? Id::createNew()->toDb(),
+            'id' => $quizDto->id ? Id::fromString($quizDto->id)->toDb() : Id::createNew()->toDb(),
             'title' => $quizDto->title
         ];
 
@@ -71,7 +71,7 @@ class QuizRepository
         $answersArr = [];
         foreach ($quizDto->questions as $questionDto) {
             $question = [
-                'id' => $questionDto->id ?? Id::createNew()->toDb(),
+                'id' => $questionDto->id ? Id::fromString($questionDto->id)->toDb() : Id::createNew()->toDb(),
                 'text' => $questionDto->text,
                 'image_src' => $questionDto->imageSrc,
                 'quiz_id' => $quizArr['id'],
@@ -79,7 +79,7 @@ class QuizRepository
 
             foreach ($questionDto->answers as $answerDto) {
                 $answersArr[] = [
-                    'id' => $answerDto->id ?? Id::createNew()->toDb(),
+                    'id' => $answerDto->id ? Id::fromString($answerDto->id)->toDb() : Id::createNew()->toDb(),
                     'text' => $answerDto->text,
                     'correct' => $answerDto->correct ? 1 : 0,
                     'question_id' => $question['id'],
