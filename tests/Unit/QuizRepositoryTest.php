@@ -2,6 +2,7 @@
 
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
+use DateTimeImmutable;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class QuizRepositoryTest extends TestCase
 {
-    public function testHasCreatedQuizRepository()
+    public function testHasCreatedQuizRepository(): void
     {
         $repository1 = new QuizRepository(
             new DummyPersistence()
@@ -25,7 +26,7 @@ class QuizRepositoryTest extends TestCase
         $this->assertInstanceOf(QuizRepository::class, $repository2);
     }
 
-    public function testFindById()
+    public function testFindById(): void
     {
         $id = Id::createNew();
         $questionId = Id::createNew();
@@ -44,6 +45,9 @@ class QuizRepositoryTest extends TestCase
                     'answer_id' => Id::createNew()->toDb(),
                     'answer_text' => 'answer_text1',
                     'answer_correct' => true,
+                    'enabled' => 1,
+                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(\DateTimeImmutable::ISO8601),
+                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(\DateTimeImmutable::ISO8601),
                 ],
                 [
                     'quiz_id' => $id->toDb(),
@@ -54,6 +58,9 @@ class QuizRepositoryTest extends TestCase
                     'answer_id' => Id::createNew()->toDb(),
                     'answer_text' => 'answer_text2',
                     'answer_correct' => false,
+                    'enabled' => 1,
+                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(\DateTimeImmutable::ISO8601),
+                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(\DateTimeImmutable::ISO8601),
                 ],
             ]);
 
@@ -69,6 +76,7 @@ class QuizRepositoryTest extends TestCase
         $this->assertTrue($quiz->getQuestions()[0]->getAnswers()[0]->isCorrect());
         $this->assertFalse($quiz->getQuestions()[0]->getAnswers()[1]->isCorrect());
         $this->assertEquals('answer_text2', $quiz->getQuestions()[0]->getAnswers()[1]->getText());
-        $this->assertNull($quiz->getPublishingManagement());
+        $this->assertNotNull($quiz->getPublishingManagement());
+        $this->assertTrue($quiz->getPublishingManagement()->isEnabled());
     }
 }

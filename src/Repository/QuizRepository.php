@@ -4,9 +4,11 @@
 namespace Observatby\Mir24Quiz\Repository;
 
 
+use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\QuizDto;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\Model\Image;
+use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
@@ -52,11 +54,20 @@ class QuizRepository
             );
         }
 
+        $management = null;
+        if ($rows[0]['enabled'] !== null) {
+            $management = new PublishingManagement(
+                $rows[0]['enabled'],
+                new DateTimeImmutable($rows[0]['begin_date']),
+                new DateTimeImmutable($rows[0]['end_date']),
+            );
+        }
+
         return new Quiz(
             $id,
             $rows[0]['quiz_title'],
             $questions,
-            null # TODO
+            $management
         );
     }
 

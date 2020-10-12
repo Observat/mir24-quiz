@@ -5,6 +5,7 @@ namespace Observatby\Mir24Quiz\Model;
 
 
 use DateTimeImmutable;
+use Observatby\Mir24Quiz\Dto\PublishingManagementDto;
 use Observatby\Mir24Quiz\QuizException;
 
 
@@ -30,6 +31,15 @@ class PublishingManagement
         $this->enabled = $enabled;
         $this->delayedPublicationDate = $delayedPublicationDate;
         $this->endedPublicationDate = $endedPublicationDate;
+    }
+
+    public static function fromDto(PublishingManagementDto $dto): self
+    {
+        return new self(
+            $dto->enabled,
+            $dto->beginDate ? new DateTimeImmutable($dto->beginDate) : null,
+            $dto->endDate ? new DateTimeImmutable($dto->endDate) : null,
+        );
     }
 
     public function isEnabled(): bool

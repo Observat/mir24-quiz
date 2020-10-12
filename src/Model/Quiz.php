@@ -41,7 +41,7 @@ class Quiz
                 },
                 $dto->questions
             ),
-            null # TODO
+            $dto->management ? PublishingManagement::fromDto($dto->management) : null
         );
     }
 

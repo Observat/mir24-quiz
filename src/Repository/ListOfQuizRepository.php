@@ -29,6 +29,9 @@ class ListOfQuizRepository
             $quizDto = new QuizMinForListOfQuizDto();
             $quizDto->id = Id::fromDb($row['quiz_id'])->toString();
             $quizDto->title = $row['quiz_title'];
+            $quizDto->enabled = $row['enabled'];
+            $quizDto->beginDate = $row['begin_date'];
+            $quizDto->endDate = $row['end_date'];
 
             $quizzes[] = $quizDto;
         }

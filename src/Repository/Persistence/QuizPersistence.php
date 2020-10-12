@@ -17,8 +17,12 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
     private PDO $pdo;
     private const QUERY_LIST = "SELECT
                                quiz.id as quiz_id,
-                               quiz.title as quiz_title
-                           FROM quiz";
+                               quiz.title as quiz_title,
+                               quiz_management.enable,
+                               quiz_management.beginDatetime as begin_date,
+                               quiz_management.endDatetime as end_date
+                           FROM quiz
+                           LEFT JOIN quiz_management ON quiz.id = quiz_management.quiz_id";
     private const QUERY = "SELECT
                                quiz.id as quiz_id,
                                quiz.title as quiz_title,
@@ -27,10 +31,14 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
                                quiz_question.image_src as question_image_src,
                                quiz_answer.id as answer_id,
                                quiz_answer.text as answer_text,
-                               quiz_answer.correct as answer_correct
+                               quiz_answer.correct as answer_correct,
+                               quiz_management.enable,
+                               quiz_management.beginDatetime as begin_date,
+                               quiz_management.endDatetime as end_date
                            FROM quiz
                            INNER JOIN quiz_question ON quiz_question.quiz_id = quiz.id
                            INNER JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
+                           LEFT JOIN quiz_management ON quiz.id = quiz_management.quiz_id
                            WHERE quiz.id = ?";
     private const QUERY_INSERT = "INSERT INTO quiz(id, title) values (?, ?) ON DUPLICATE KEY UPDATE title=?;";
 
