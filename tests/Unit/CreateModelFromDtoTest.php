@@ -16,7 +16,7 @@ class CreateModelFromDtoTest extends TestCase
 {
     use CreateQuizTrait;
 
-    public function testCreateQuizFromDto()
+    public function testCreateQuizFromDto(): void
     {
         $quiz = new Quiz(
             Id::createNew(),

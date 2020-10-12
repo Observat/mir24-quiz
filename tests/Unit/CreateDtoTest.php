@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class CreateDtoTest extends TestCase
 {
-    public function testEmptyQuizDto()
+    public function testEmptyQuizDto(): void
     {
         $quizDto = new QuizDto();
 
@@ -24,7 +24,7 @@ class CreateDtoTest extends TestCase
         $this->assertNull($quizDto->management);
     }
 
-    public function testEmptyQuestionDto()
+    public function testEmptyQuestionDto(): void
     {
         $questionDto = new QuestionDto();
 
@@ -33,7 +33,7 @@ class CreateDtoTest extends TestCase
         $this->assertNull($questionDto->answers);
     }
 
-    public function testEmptyAnswerDto()
+    public function testEmptyAnswerDto(): void
     {
         $answerDto = new AnswerDto();
 

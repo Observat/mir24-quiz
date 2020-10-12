@@ -16,7 +16,7 @@ class GetQuizDtoFromRawDbIdForEditingTest extends TestCase
 {
     use CreateQuizTrait;
 
-    public function testHandle()
+    public function testHandle(): void
     {
         $id = Id::createNew();
 

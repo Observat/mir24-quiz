@@ -14,7 +14,7 @@ class TransformToDtoTest extends TestCase
 {
     use CreateQuizTrait;
 
-    public function testTransformQuizForUse()
+    public function testTransformQuizForUse(): void
     {
         $quiz = new Quiz(
             Id::createNew(),
@@ -38,7 +38,7 @@ class TransformToDtoTest extends TestCase
         $this->assertNull($dto->management);
     }
 
-    public function testTransformQuizForManagement()
+    public function testTransformQuizForManagement(): void
     {
         $quiz = new Quiz(
             Id::createNew(),
@@ -62,7 +62,7 @@ class TransformToDtoTest extends TestCase
         $this->assertTrue($dto->management->enabled);
     }
 
-    public function testTransformQuizFromArray()
+    public function testTransformQuizFromArray(): void
     {
         $data = [
             'id' => Id::createNew()->toString(),

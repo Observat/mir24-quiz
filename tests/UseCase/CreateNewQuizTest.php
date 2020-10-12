@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class CreateNewQuizTest extends TestCase
 {
-    public function testEmptyData()
+    public function testEmptyData(): void
     {
         $repository = new QuizRepository(new InMemoryPersistence());
         $data = [];
@@ -24,7 +24,7 @@ class CreateNewQuizTest extends TestCase
         CreateNewQuiz::createWithRepository($repository)->handle($data);
     }
 
-    public function testHandle()
+    public function testHandle(): void
     {
         $persistence = new InMemoryPersistence();
         $repository = new QuizRepository($persistence);

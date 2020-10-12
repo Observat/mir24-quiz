@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class GetListOfQuizTest extends TestCase
 {
-    public function testEmptyHandle()
+    public function testEmptyHandle(): void
     {
         $listDto = GetListOfQuiz::createWithRepository(new ListOfQuizRepository(new DummyPersistence()))
             ->handle();

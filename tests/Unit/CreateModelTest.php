@@ -17,7 +17,7 @@ class CreateModelTest extends TestCase
 {
     use CreateQuizTrait;
 
-    public function testCreateQuiz()
+    public function testCreateQuiz(): void
     {
         $quiz = new Quiz(
             Id::createNew(),
@@ -31,7 +31,7 @@ class CreateModelTest extends TestCase
         $this->assertInstanceOf(Quiz::class, $quiz);
     }
 
-    public function testCreateReceivedQuiz()
+    public function testCreateReceivedQuiz(): void
     {
         $quiz = new Quiz(
             Id::createNew(),

@@ -17,7 +17,7 @@ class PublishingManagementTest extends TestCase
 {
     use CreateQuizTrait;
 
-    public function testCreateQuizWithPublishingManagement()
+    public function testCreateQuizWithPublishingManagement(): void
     {
         $quiz = new Quiz(
             Id::createNew(),
@@ -32,7 +32,7 @@ class PublishingManagementTest extends TestCase
         $this->assertTrue($quiz->getPublishingManagement()->isActive());
     }
 
-    public function testEnable()
+    public function testEnable(): void
     {
         $management = new PublishingManagement(true, new DateTimeImmutable('now - 1 week'), new DateTimeImmutable('now + 1 week'));
         $this->assertTrue($management->isActive());
@@ -44,7 +44,7 @@ class PublishingManagementTest extends TestCase
         $this->assertTrue($management->isActive());
     }
 
-    public function testBeginDate()
+    public function testBeginDate(): void
     {
         $management = new PublishingManagement(true, new DateTimeImmutable('now - 1 week'), new DateTimeImmutable('now + 1 week'));
         $this->assertTrue($management->isActive());
@@ -56,7 +56,7 @@ class PublishingManagementTest extends TestCase
         $this->assertFalse($management->isActive());
     }
 
-    public function testEndDate()
+    public function testEndDate(): void
     {
         $management = new PublishingManagement(true, new DateTimeImmutable('now - 1 week'), new DateTimeImmutable('now + 1 week'));
         $this->assertTrue($management->isActive());
@@ -68,7 +68,7 @@ class PublishingManagementTest extends TestCase
         $this->assertTrue($management->isActive());
     }
 
-    public function testIncorrectTimeRange()
+    public function testIncorrectTimeRange(): void
     {
         $this->expectException(QuizException::class);
 

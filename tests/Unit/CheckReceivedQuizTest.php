@@ -19,7 +19,7 @@ class CheckReceivedQuizTest extends TestCase
 {
     use CreateQuizTrait;
 
-    public function testCountSuccessAnswer()
+    public function testCountSuccessAnswer(): void
     {
         $answerYesTrue = $this->createQuizAnswer_yes_true();
         $answerYesFalse = $this->createQuizAnswer_yes_false();
