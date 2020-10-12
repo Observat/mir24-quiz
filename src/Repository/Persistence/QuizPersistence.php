@@ -105,7 +105,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
             if ($sth->execute([$data['quiz']['id'], $data['quiz']['title'], $data['quiz']['title']])
                 && $this->multiInsert('quiz_question', ['id', 'text', 'image_src', 'quiz_id'], $data['questions'])
                 && $this->multiInsert('quiz_answer', ['id', 'text', 'correct', 'question_id'], $data['answers'])
-                && $this->multiInsert('quiz_management', ['quiz_id', 'enable', 'beginDatetime', 'endDatetime'], [$data['management']])
+//                && $this->multiInsert('quiz_management', ['quiz_id', 'enable', 'beginDatetime', 'endDatetime'], [$data['management']])
 // TODO               && $this->deleteNotIn('quiz_question', 'quiz_id', [$data['quiz']['id']], 'id', array_column($data['questions'], 'id'))
 // TODO               && $this->deleteNotIn('quiz_answer', 'question_id', array_column($data['questions'], 'id'), 'id', array_column($data['answers'], 'id'))
             ) {
