@@ -143,4 +143,40 @@ class TransformToDtoTest extends TestCase
         $this->assertTrue($dto->management->enabled);
         $this->assertNull($dto->management->beginDate);
     }
+
+    public function testTransformQuizFromArrayWithEmptyManagement(): void
+    {
+        $data = [
+            'id' => Id::createNew()->toString(),
+            'title' => 'quiz_title',
+            'questions' => [
+                [
+                    'id' => Id::createNew()->toString(),
+                    'text' => 'question_text',
+                    'imageSrc' => 'question_image_src',
+                    'answers' => [
+                        [
+                            'id' => Id::createNew()->toString(),
+                            'text' => 'answer_text1',
+                            'correct' => true,
+                        ],
+                        [
+                            'id' => Id::createNew()->toString(),
+                            'text' => 'answer_text2',
+                            'correct' => false,
+                        ],
+                    ],
+                ]
+            ],
+            'management' => null
+        ];
+
+        $dto = QuizToDto::transformFromArray($data);
+
+        $this->assertIsString($dto->id);
+        $this->assertEquals('quiz_title', $dto->title);
+        $this->assertEquals('question_text', ($dto->questions)[0]->text);
+        $this->assertFalse((($dto->questions)[0]->answers)[1]->correct);
+        $this->assertNull($dto->management);
+    }
 }

@@ -88,7 +88,7 @@ class QuizToDto
         }
         $quizDto->questions = $questionsDto;
 
-        if (array_key_exists('management', $data)) {
+        if (array_key_exists('management', $data) && $data['management'] !== null) {
             $managementDto = new PublishingManagementDto();
             $managementDto->enabled = $data['management']['enabled'];
             $managementDto->beginDate = $data['management']['beginDate'];
