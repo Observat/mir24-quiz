@@ -31,8 +31,8 @@ class ListOfQuizRepository
             $quizDto->id = Id::fromDb($row['quiz_id'])->toString();
             $quizDto->title = $row['quiz_title'];
             $quizDto->enabled = $row['enabled'];
-            $quizDto->beginDate = new DateTimeImmutable($row['begin_date']);
-            $quizDto->endDate = new DateTimeImmutable($row['end_date']);
+            $quizDto->beginDate = $row['begin_date'] !== null ? new DateTimeImmutable($row['begin_date']) : null;
+            $quizDto->endDate = $row['end_date'] !== null ? new DateTimeImmutable($row['end_date']) : null;
 
             $quizzes[] = $quizDto;
         }

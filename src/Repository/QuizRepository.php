@@ -103,10 +103,10 @@ class QuizRepository
         $managementDto = $quizDto->management;
         if ($managementDto !== null) {
             $management = [
-                'quiz_id' => $quizDto->id ? Id::fromString($quizDto->id)->toDb() : Id::createNew()->toDb(),
+                'quiz_id' => $quizArr['id'],
                 'enable' => $managementDto->enabled,
-                'beginDatetime' => $managementDto->beginDate->format("Y-m-d H:i:s"),
-                'endDatetime' => $managementDto->endDate->format("Y-m-d H:i:s")
+                'beginDatetime' => $managementDto->beginDate ? $managementDto->beginDate->format("Y-m-d H:i:s") : null,
+                'endDatetime' => $managementDto->endDate ? $managementDto->endDate->format("Y-m-d H:i:s") : null
             ];
         }
 
