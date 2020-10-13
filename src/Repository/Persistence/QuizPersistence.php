@@ -130,7 +130,6 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
     {
         $insertPlaceholder = [];
         $insertValues = [];
-        $updateValues = [];
         $updateFieldsWithPlaceholders = [];
 
         $i = 0;
@@ -143,9 +142,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
                 $insertValues[$insertKey] = $d[$field];
 
                 if ($uIndex !== 0) {
-                    $updateKey = ':u' . $i . $field;
-                    $updateValues[$updateKey] = $d[$field];
-                    $updateFieldsWithPlaceholders[] = $field . '=' . $updateKey;
+                    $updateFieldsWithPlaceholders[] = $field . '=values(' . $field . ')';
                 }
                 $uIndex++;
             }
@@ -161,7 +158,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         );
 
         $stmt = $this->pdo->prepare($sthText);
-        return $stmt->execute(array_merge($insertValues, $updateValues));
+        return $stmt->execute(array_merge($insertValues));
     }
 
     private function deleteNotIn(string $table, string $includedField, array $included, string $excludedField, array $excluded): bool
