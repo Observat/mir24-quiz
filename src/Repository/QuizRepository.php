@@ -58,8 +58,8 @@ class QuizRepository
         if ($rows[0]['enabled'] !== null) {
             $management = new PublishingManagement(
                 $rows[0]['enabled'],
-                new DateTimeImmutable($rows[0]['begin_date']),
-                new DateTimeImmutable($rows[0]['end_date']),
+                $rows[0]['begin_date'] !== null ? new DateTimeImmutable($rows[0]['begin_date']) : null,
+                $rows[0]['end_date'] !== null ? new DateTimeImmutable($rows[0]['end_date']) : null,
             );
         }
 
@@ -99,15 +99,17 @@ class QuizRepository
             $questionsArr[] = $question;
         }
 
-        $management = [];
+        $management = [
+            'quiz_id' => $quizArr['id'],
+            'enable' => 0,
+            'beginDatetime' => null,
+            'endDatetime' => null
+        ];
         $managementDto = $quizDto->management;
         if ($managementDto !== null) {
-            $management = [
-                'quiz_id' => $quizArr['id'],
-                'enable' => $managementDto->enabled,
-                'beginDatetime' => $managementDto->beginDate ? $managementDto->beginDate->format("Y-m-d H:i:s") : null,
-                'endDatetime' => $managementDto->endDate ? $managementDto->endDate->format("Y-m-d H:i:s") : null
-            ];
+            $management['enable'] = $managementDto->enabled ? 1 : 0;
+            $management['beginDatetime'] = $managementDto->beginDate ? $managementDto->beginDate->format("Y-m-d H:i:s") : null;
+            $management['endDatetime'] = $managementDto->endDate ? $managementDto->endDate->format("Y-m-d H:i:s") : null;
         }
 
         $this->persistence->persist([

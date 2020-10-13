@@ -136,14 +136,18 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         $i = 0;
         foreach ($data as $d) {
             $insertKeys = [];
+            $uIndex = 0;
             foreach ($insertFields as $field) {
                 $insertKey = ':i' . $i . $field;
                 $insertKeys[] = $insertKey;
                 $insertValues[$insertKey] = $d[$field];
 
-                $updateKey = ':u' . $i . $field;
-                $updateValues[$updateKey] = $d[$field];
-                $updateFieldsWithPlaceholders[] = $field . '=' . $updateKey;
+                if ($uIndex !== 0) {
+                    $updateKey = ':u' . $i . $field;
+                    $updateValues[$updateKey] = $d[$field];
+                    $updateFieldsWithPlaceholders[] = $field . '=' . $updateKey;
+                }
+                $uIndex++;
             }
             $insertPlaceholder[] = '(' . implode(',', $insertKeys) . ')';
             $i++;
