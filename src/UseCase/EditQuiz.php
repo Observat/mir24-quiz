@@ -10,6 +10,7 @@ use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
 use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 class EditQuiz
 {
@@ -32,16 +33,34 @@ class EditQuiz
 
     /**
      * @param array $data
+     * @param LoggerInterface|null $logger
      * @throws QuizException
      */
-    public function handle(array $data): void
+    public function handle(array $data, ?LoggerInterface $logger = null): void
     {
         try {
             $quizDto = QuizToDto::transformFromArray($data);
         } catch (Exception $e) {
+            if ($logger !== null) {
+                $logger->error(sprintf("[%s] Exception: '%s'",
+                    self::class,
+                    $e->getMessage(),
+                ));
+            }
             throw new QuizException(QuizException::INPUT_ARRAY_AND_OUTPUT_DTO_MISMATCH);
         }
 
-        $this->repository->update($quizDto);
+        try {
+            $this->repository->update($quizDto);
+        } catch (QuizException $e) {
+            if ($logger !== null && $e->getPrevious() !== null) {
+                $logger->error(sprintf("[%s] Exception: '%s'. Stack trace: %s",
+                    self::class,
+                    $e->getPrevious()->getMessage(),
+                    $e->getPrevious()->getTraceAsString()
+                ));
+            }
+            throw new QuizException($e->getMessage(), $e->getCode());
+        }
     }
 }

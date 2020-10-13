@@ -59,7 +59,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         try {
             $sth = $this->pdo->prepare(self::QUERY);
         } catch (PDOException $e) {
-            throw new QuizException(QuizException::DATABASE_IS_NOT_PREPARED);
+            throw new QuizException(QuizException::DATABASE_IS_NOT_PREPARED, 0, $e);
         }
 
         $sth->execute([$id->toDb()]);
@@ -82,7 +82,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         try {
             $sth = $this->pdo->prepare(self::QUERY_LIST);
         } catch (PDOException $e) {
-            throw new QuizException(QuizException::DATABASE_IS_NOT_PREPARED);
+            throw new QuizException(QuizException::DATABASE_IS_NOT_PREPARED, 0, $e);
         }
 
         $sth->execute();
@@ -116,8 +116,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
             }
         } catch (Exception $e) {
             $dbh->rollBack();
-            # TODO LoggerInterface::error($e->getMessage());
-            throw new QuizException(QuizException::NOT_CREATED_IN_DATABASE);
+            throw new QuizException(QuizException::NOT_CREATED_IN_DATABASE, 0, $e);
         }
     }
 

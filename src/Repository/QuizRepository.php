@@ -12,6 +12,7 @@ use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
+use Observatby\Mir24Quiz\QuizException;
 
 class QuizRepository
 {
@@ -71,6 +72,10 @@ class QuizRepository
         );
     }
 
+    /**
+     * @param QuizDto $quizDto
+     * @throws QuizException
+     */
     public function create(QuizDto $quizDto): void
     {
         $quizArr = [
@@ -120,6 +125,10 @@ class QuizRepository
         ]);
     }
 
+    /**
+     * @param QuizDto $quizDto
+     * @throws QuizException
+     */
     public function update(QuizDto $quizDto): void
     {
         $this->create($quizDto);
