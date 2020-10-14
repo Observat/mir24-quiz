@@ -5,7 +5,7 @@ namespace Observatby\Mir24Quiz\Tests\UseCase;
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\QuizException;
-use Observatby\Mir24Quiz\Repository\Persistence\InMemoryPersistence;
+use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
 use Observatby\Mir24Quiz\UseCase\CreateNewQuiz;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class CreateNewQuizTest extends TestCase
 {
     public function testEmptyData(): void
     {
-        $repository = new QuizRepository(new InMemoryPersistence());
+        $repository = new QuizRepository(new DummyPersistence());
         $data = [];
 
         $this->expectException(QuizException::class);
@@ -26,8 +26,6 @@ class CreateNewQuizTest extends TestCase
 
     public function testHandle(): void
     {
-        $persistence = new InMemoryPersistence();
-        $repository = new QuizRepository($persistence);
         $id = Id::createNew();
 
         $data = [
@@ -59,15 +57,11 @@ class CreateNewQuizTest extends TestCase
             ]
         ];
 
-        CreateNewQuiz::createWithRepository($repository)->handle($data);
+        $mockRepository = $this->createMock(QuizRepository::class);
+        $mockRepository
+            ->expects($this->once())
+            ->method('create');
 
-        $quizDtoSaved = $persistence->retrieve($id);
-        $this->assertEquals("New quiz", $quizDtoSaved['quiz']['title']);
-        $this->assertEquals("answer_text2", $quizDtoSaved['answers'][1]['text']);
-
-
-//        $quizFounded = $repository->findById($id); TODO
-//        $this->assertEquals("New quiz", $quizFounded->getTitle());
-//        $this->assertEquals("answer_text2", $quizFounded->getQuestions()[0]->getAnswers()[1]->getText());
+        CreateNewQuiz::createWithRepository($mockRepository)->handle($data);
     }
 }
