@@ -106,7 +106,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
                 && $this->multiInsert('quiz_question', ['id', 'text', 'image_src', 'quiz_id'], $data['questions'])
                 && $this->multiInsert('quiz_answer', ['id', 'text', 'correct', 'question_id'], $data['answers'])
                 && $this->multiInsert('quiz_management', ['quiz_id', 'enable', 'beginDatetime', 'endDatetime'], [$data['management']])
-                && $this->deleteNotIn('quiz_question', 'quiz_id', [$data['quiz']['id']], 'id', array_column($data['questions'], 'id'))
+                && $this->deleteNotInWithOneCascade('quiz_question', 'quiz_id', [$data['quiz']['id']], 'id', array_column($data['questions'], 'id'), 'quiz_answer', 'question_id')
                 && $this->deleteNotIn('quiz_answer', 'question_id', array_column($data['questions'], 'id'), 'id', array_column($data['answers'], 'id'))
             ) {
                 $dbh->commit();
@@ -175,5 +175,49 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
 
         $stmt = $this->pdo->prepare($sthText);
         return $stmt->execute(array_merge($included, $excluded));
+    }
+
+    private function deleteNotInWithOneCascade(string $table, string $includedField, array $included, string $excludedField, array $excluded, string $childTable, string $childField): bool
+    {
+        $querySelect = sprintf('SELECT %s FROM %s WHERE %s IN (%s) AND %s NOT IN (%s);',
+            $excludedField,
+            $table,
+            $includedField,
+            implode(',', array_fill(0, count($included), '?')),
+            $excludedField,
+            implode(',', array_fill(0, count($excluded), '?'))
+        );
+        $sthSelect = $this->pdo->prepare($querySelect);
+        if (!$sthSelect->execute(array_merge($included, $excluded))) {
+            return false;
+        }
+        $idsParent = $sthSelect->fetchAll(PDO::FETCH_COLUMN, 0);
+        if (count($idsParent) === 0) {
+            return true;
+        }
+
+        $queryDeleteChild = sprintf(
+            'DELETE FROM %s WHERE %s IN (%s)',
+            $childTable,
+            $childField,
+            implode(',', array_fill(0, count($idsParent), '?')),
+        );
+        $isDeletedChild = $this->pdo
+            ->prepare($queryDeleteChild)
+            ->execute($idsParent);
+
+        if (!$isDeletedChild) {
+            return false;
+        }
+
+        $queryDeleteParent = sprintf(
+            'DELETE FROM %s WHERE %s IN (%s)',
+            $table,
+            $excludedField,
+            implode(',', array_fill(0, count($idsParent), '?')),
+        );
+        return $this->pdo
+            ->prepare($queryDeleteParent)
+            ->execute($idsParent);
     }
 }
