@@ -4,6 +4,7 @@
 namespace Observatby\Mir24Quiz\TransformToDto;
 
 
+use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\AnswerDto;
 use Observatby\Mir24Quiz\Dto\PublishingManagementDto;
 use Observatby\Mir24Quiz\Dto\QuestionDto;
@@ -91,8 +92,16 @@ class QuizToDto
         if (array_key_exists('management', $data) && $data['management'] !== null) {
             $managementDto = new PublishingManagementDto();
             $managementDto->enabled = $data['management']['enabled'];
-            $managementDto->beginDate = $data['management']['beginDate'];
-            $managementDto->endDate = $data['management']['endDate'];
+            foreach (['beginDate', 'endDate'] as $field) {
+                if($data['management'][$field] === null) {
+                    $managementDto->$field = null;
+                }
+                else {
+                    $managementDto->$field = ($data['management'][$field] instanceof DateTimeImmutable)
+                        ? $data['management'][$field]
+                        : new DateTimeImmutable($data['management'][$field]);
+                }
+            }
 
             $quizDto->management = $managementDto;
         }
