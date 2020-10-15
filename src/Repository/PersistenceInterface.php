@@ -17,5 +17,9 @@ interface PersistenceInterface
 
     public function retrieve(Id $id): array;
 
+    /**
+     * @param Id $id
+     * @throws QuizException
+     */
     public function delete(Id $id): void;
 }

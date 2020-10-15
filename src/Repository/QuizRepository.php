@@ -138,4 +138,13 @@ class QuizRepository
     {
         return $this->create($quizDto);
     }
+
+    /**
+     * @param Id $id
+     * @throws QuizException
+     */
+    public function delete(Id $id): void
+    {
+        $this->persistence->delete($id);
+    }
 }

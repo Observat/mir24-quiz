@@ -139,4 +139,19 @@ class QuizRepositoryTest extends TestCase
 
         $this->assertEquals($id->toString(), $createdId->toString());
     }
+
+    public function testDelete(): void
+    {
+        $id = Id::createNew();
+
+        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence
+            ->expects($this->once())
+            ->method('delete');
+
+        /** @var QuizPersistence $mockPersistence */
+        $repository = new QuizRepository($mockPersistence);
+
+        $repository->delete($id);
+    }
 }

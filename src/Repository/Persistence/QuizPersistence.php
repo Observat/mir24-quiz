@@ -40,6 +40,14 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
                            INNER JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
                            LEFT JOIN quiz_management ON quiz.id = quiz_management.quiz_id
                            WHERE quiz.id = ?";
+    private const QUERY_ONLY_ID = "SELECT
+                               quiz.id as quiz_id,
+                               quiz_question.id as question_id,
+                               quiz_answer.id as answer_id
+                           FROM quiz
+                           INNER JOIN quiz_question ON quiz_question.quiz_id = quiz.id
+                           INNER JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
+                           WHERE quiz.id = ?";
     private const QUERY_INSERT = "INSERT INTO quiz(id, title) values (?, ?) ON DUPLICATE KEY UPDATE title=?;";
 
     public function __construct(PDO $pdo)
@@ -120,9 +128,42 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         }
     }
 
+    /**
+     * @param Id $id
+     * @throws QuizException
+     */
     public function delete(Id $id): void
     {
-        // TODO: Implement delete() method.
+        $dbh = $this->pdo;
+        try {
+            $sth = $dbh->prepare(self::QUERY_ONLY_ID);
+        } catch (PDOException $e) {
+            throw new QuizException(QuizException::DATABASE_IS_NOT_PREPARED, 0, $e);
+        }
+
+        $sth->execute([$id->toDb()]);
+        $rows = $sth->fetchAll(PDO::FETCH_ASSOC);
+        $sth->closeCursor();
+
+        if ($rows === false) {
+            throw new QuizException(QuizException::NOT_FOUND_QUIZ_IN_DATABASE);
+        }
+
+        try {
+            $dbh->beginTransaction();
+            if ($this->deleteIn('quiz_answer', 'id', array_column($rows, 'answer_id'))
+                && $this->deleteIn('quiz_question', 'id', array_column($rows, 'question'))
+                && $this->deleteIn('quiz', 'id', [$id->toDb()])
+            ) {
+                $dbh->commit();
+            } else {
+                $dbh->rollBack();
+                throw new QuizException(QuizException::NOT_DELETED_FROM_DATABASE);
+            }
+        } catch (Exception $e) {
+            $dbh->rollBack();
+            throw new QuizException(QuizException::NOT_DELETED_FROM_DATABASE, 0, $e);
+        }
     }
 
     private function multiInsert(string $table, array $insertFields, array $data): bool
@@ -196,28 +237,21 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
             return true;
         }
 
-        $queryDeleteChild = sprintf(
-            'DELETE FROM %s WHERE %s IN (%s)',
-            $childTable,
-            $childField,
-            implode(',', array_fill(0, count($idsParent), '?')),
-        );
-        $isDeletedChild = $this->pdo
-            ->prepare($queryDeleteChild)
-            ->execute($idsParent);
+        return $this->deleteIn($childTable, $childField, $idsParent)
+            && $this->deleteIn($table, $excludedField, $idsParent);
+    }
 
-        if (!$isDeletedChild) {
-            return false;
-        }
-
-        $queryDeleteParent = sprintf(
+    private function deleteIn(string $table, string $includedField, array $included): bool
+    {
+        $queryDelete = sprintf(
             'DELETE FROM %s WHERE %s IN (%s)',
             $table,
-            $excludedField,
-            implode(',', array_fill(0, count($idsParent), '?')),
+            $includedField,
+            implode(',', array_fill(0, count($included), '?')),
         );
+
         return $this->pdo
-            ->prepare($queryDeleteParent)
-            ->execute($idsParent);
+            ->prepare($queryDelete)
+            ->execute($included);
     }
 }
