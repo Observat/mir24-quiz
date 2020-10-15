@@ -4,14 +4,20 @@ namespace Observatby\Mir24Quiz\Tests\Unit;
 
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\PublishingManagement;
+use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
+use Observatby\Mir24Quiz\Tests\CreateQuizTrait;
+use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
 use PDO;
 use PHPUnit\Framework\TestCase;
 
 class QuizRepositoryTest extends TestCase
 {
+    use CreateQuizTrait;
+
     public function testHasCreatedQuizRepository(): void
     {
         $repository1 = new QuizRepository(
@@ -78,5 +84,59 @@ class QuizRepositoryTest extends TestCase
         $this->assertEquals('answer_text2', $quiz->getQuestions()[0]->getAnswers()[1]->getText());
         $this->assertNotNull($quiz->getPublishingManagement());
         $this->assertTrue($quiz->getPublishingManagement()->isEnabled());
+    }
+
+    public function testCreate(): void
+    {
+        $quiz = new Quiz(
+            Id::createNew(),
+            'First quiz',
+            [
+                $this->createQuizQuestion_1(),
+                $this->createQuizQuestion_2(),
+            ],
+            new PublishingManagement(true, new DateTimeImmutable('now - 1 week'), new DateTimeImmutable('now + 1 week')),
+        );
+        $quizDto = QuizToDto::transformForChange($quiz);
+        $quizDto->id = null;
+
+        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence
+            ->expects($this->once())
+            ->method('persist');
+
+        /** @var QuizPersistence $mockPersistence */
+        $repository = new QuizRepository($mockPersistence);
+
+        $createdId = $repository->create($quizDto);
+
+        $this->assertInstanceOf(Id::class, $createdId);
+    }
+
+    public function testUpdate(): void
+    {
+        $id = Id::createNew();
+        $quiz = new Quiz(
+            $id,
+            'First quiz',
+            [
+                $this->createQuizQuestion_1(),
+                $this->createQuizQuestion_2(),
+            ],
+            new PublishingManagement(true, new DateTimeImmutable('now - 1 week'), new DateTimeImmutable('now + 1 week')),
+        );
+        $quizDto = QuizToDto::transformForChange($quiz);
+
+        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence
+            ->expects($this->once())
+            ->method('persist');
+
+        /** @var QuizPersistence $mockPersistence */
+        $repository = new QuizRepository($mockPersistence);
+
+        $createdId = $repository->update($quizDto);
+
+        $this->assertEquals($id->toString(), $createdId->toString());
     }
 }

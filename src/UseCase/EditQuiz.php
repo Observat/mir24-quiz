@@ -5,6 +5,7 @@ namespace Observatby\Mir24Quiz\UseCase;
 
 
 use Exception;
+use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
@@ -34,9 +35,10 @@ class EditQuiz
     /**
      * @param array $data
      * @param LoggerInterface|null $logger
+     * @return Id
      * @throws QuizException
      */
-    public function handle(array $data, ?LoggerInterface $logger = null): void
+    public function handle(array $data, ?LoggerInterface $logger = null): Id
     {
         try {
             $quizDto = QuizToDto::transformFromArray($data);
@@ -51,7 +53,7 @@ class EditQuiz
         }
 
         try {
-            $this->repository->update($quizDto);
+            return $this->repository->update($quizDto);
         } catch (QuizException $e) {
             if ($logger !== null && $e->getPrevious() !== null) {
                 $logger->error(sprintf("[%s] Exception: '%s'. Stack trace: %s",

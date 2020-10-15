@@ -74,12 +74,14 @@ class QuizRepository
 
     /**
      * @param QuizDto $quizDto
+     * @return Id
      * @throws QuizException
      */
-    public function create(QuizDto $quizDto): void
+    public function create(QuizDto $quizDto): Id
     {
+        $quizId = $quizDto->id ? Id::fromString($quizDto->id) : Id::createNew();
         $quizArr = [
-            'id' => $quizDto->id ? Id::fromString($quizDto->id)->toDb() : Id::createNew()->toDb(),
+            'id' => $quizId->toDb(),
             'title' => $quizDto->title
         ];
 
@@ -123,14 +125,17 @@ class QuizRepository
             'answers' => $answersArr,
             'management' => $management,
         ]);
+
+        return $quizId;
     }
 
     /**
      * @param QuizDto $quizDto
+     * @return Id
      * @throws QuizException
      */
-    public function update(QuizDto $quizDto): void
+    public function update(QuizDto $quizDto): Id
     {
-        $this->create($quizDto);
+        return $this->create($quizDto);
     }
 }

@@ -60,8 +60,11 @@ class CreateNewQuizTest extends TestCase
         $mockRepository = $this->createMock(QuizRepository::class);
         $mockRepository
             ->expects($this->once())
-            ->method('create');
+            ->method('create')
+            ->willReturn(Id::fromString($data['id']));
 
-        CreateNewQuiz::createWithRepository($mockRepository)->handle($data);
+        $createdId = CreateNewQuiz::createWithRepository($mockRepository)->handle($data);
+
+        $this->assertEquals($id->toString(), $createdId->toString());
     }
 }
