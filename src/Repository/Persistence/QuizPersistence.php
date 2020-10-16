@@ -45,8 +45,8 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
                                quiz_question.id as question_id,
                                quiz_answer.id as answer_id
                            FROM quiz
-                           INNER JOIN quiz_question ON quiz_question.quiz_id = quiz.id
-                           INNER JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
+                           LEFT JOIN quiz_question ON quiz_question.quiz_id = quiz.id
+                           LEFT JOIN quiz_answer ON quiz_answer.question_id = quiz_question.id
                            WHERE quiz.id = ?";
     private const QUERY_INSERT = "INSERT INTO quiz(id, title) values (?, ?) ON DUPLICATE KEY UPDATE title=?;";
 
@@ -152,7 +152,8 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         try {
             $dbh->beginTransaction();
             if ($this->deleteIn('quiz_answer', 'id', array_column($rows, 'answer_id'))
-                && $this->deleteIn('quiz_question', 'id', array_column($rows, 'question'))
+                && $this->deleteIn('quiz_question', 'id', array_column($rows, 'question_id'))
+                && $this->deleteIn('quiz_management', 'quiz_id', [$id->toDb()])
                 && $this->deleteIn('quiz', 'id', [$id->toDb()])
             ) {
                 $dbh->commit();
@@ -243,6 +244,10 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
 
     private function deleteIn(string $table, string $includedField, array $included): bool
     {
+        if (count($included) === 0) {
+            return true;
+        }
+
         $queryDelete = sprintf(
             'DELETE FROM %s WHERE %s IN (%s)',
             $table,
