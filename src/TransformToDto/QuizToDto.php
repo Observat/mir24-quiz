@@ -4,6 +4,7 @@
 namespace Observatby\Mir24Quiz\TransformToDto;
 
 
+use Closure;
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\AnswerDto;
 use Observatby\Mir24Quiz\Dto\PublishingManagementDto;
@@ -72,7 +73,9 @@ class QuizToDto
             $questionDto = new QuestionDto();
             $questionDto->id = $question['id'];
             $questionDto->text = $question['text'];
-            $questionDto->imageSrc = $question['imageSrc'];
+            $questionDto->imageSrc = ($question['imageSrc'] instanceof Closure)
+                ? $question['imageSrc']($question['id'])
+                : $question['imageSrc'];
 
             $answersDto = [];
             foreach ($question['answers'] as $answer) {
@@ -93,10 +96,9 @@ class QuizToDto
             $managementDto = new PublishingManagementDto();
             $managementDto->enabled = $data['management']['enabled'];
             foreach (['beginDate', 'endDate'] as $field) {
-                if($data['management'][$field] === null) {
+                if ($data['management'][$field] === null) {
                     $managementDto->$field = null;
-                }
-                else {
+                } else {
                     $managementDto->$field = ($data['management'][$field] instanceof DateTimeImmutable)
                         ? $data['management'][$field]
                         : new DateTimeImmutable($data['management'][$field]);

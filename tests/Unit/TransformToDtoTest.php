@@ -153,7 +153,9 @@ class TransformToDtoTest extends TestCase
                 [
                     'id' => Id::createNew()->toString(),
                     'text' => 'question_text',
-                    'imageSrc' => 'question_image_src',
+                    'imageSrc' => function ($questionId) {
+                        return 'question_image_src_' . $questionId;
+                    },
                     'answers' => [
                         [
                             'id' => Id::createNew()->toString(),
@@ -176,6 +178,8 @@ class TransformToDtoTest extends TestCase
         $this->assertIsString($dto->id);
         $this->assertEquals('quiz_title', $dto->title);
         $this->assertEquals('question_text', ($dto->questions)[0]->text);
+        $this->assertStringStartsWith('question_image_src_', ($dto->questions)[0]->imageSrc);
+        $this->assertGreaterThan(strlen('question_image_src_'), strlen(($dto->questions)[0]->imageSrc));
         $this->assertFalse((($dto->questions)[0]->answers)[1]->correct);
         $this->assertNull($dto->management);
     }

@@ -37,8 +37,8 @@ class PublishingManagement
     {
         return new self(
             $dto->enabled,
-            $dto->beginDate ? new DateTimeImmutable($dto->beginDate) : null,
-            $dto->endDate ? new DateTimeImmutable($dto->endDate) : null,
+            $dto->beginDate,
+            $dto->endDate,
         );
     }
 
