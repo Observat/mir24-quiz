@@ -6,18 +6,18 @@ namespace Observatby\Mir24Quiz\Model;
 
 class Image
 {
-    private string $src;
+    private ?string $src;
 
     /**
      * Image constructor.
-     * @param string $src
+     * @param ?string $src
      */
-    public function __construct(string $src)
+    public function __construct(?string $src)
     {
         $this->src = $src;
     }
 
-    public function getSrc(): string
+    public function getSrc(): ?string
     {
         return $this->src;
     }

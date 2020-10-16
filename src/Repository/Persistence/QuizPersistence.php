@@ -74,7 +74,7 @@ class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
         $res = $sth->fetchAll(PDO::FETCH_ASSOC);
         $sth->closeCursor();
 
-        if ($res === false) {
+        if ($res === false || count($res) === 0) {
             throw new QuizException(QuizException::NOT_FOUND_QUIZ_IN_DATABASE);
         }
 
