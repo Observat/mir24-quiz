@@ -6,6 +6,7 @@ namespace Observatby\Mir24Quiz\Repository;
 
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\QuizDto;
+use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\Model\Id;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
@@ -23,7 +24,7 @@ class QuizRepository
         $this->persistence = $persistence;
     }
 
-    public function findById(Id $id): Quiz
+    public function findById(IdInterface $id): Quiz
     {
         $rows = $this->persistence->retrieve($id);
 
@@ -39,7 +40,7 @@ class QuizRepository
             }
 
             $answers[$row['question_id']][] = new QuizAnswer(
-                Id::fromDb($row['answer_id']),
+                Id::fromDb($row['answer_id']), # TODO
                 $row['answer_correct'],
                 $row['answer_text']
             );
@@ -74,12 +75,12 @@ class QuizRepository
 
     /**
      * @param QuizDto $quizDto
-     * @return Id
+     * @return IdInterface
      * @throws QuizException
      */
-    public function create(QuizDto $quizDto): Id
+    public function create(QuizDto $quizDto): IdInterface
     {
-        $quizId = $quizDto->id ? Id::fromString($quizDto->id) : Id::createNew();
+        $quizId = $quizDto->id ? Id::fromString($quizDto->id) : Id::createNew(); # TODO
         $quizArr = [
             'id' => $quizId->toDb(),
             'title' => $quizDto->title
@@ -89,7 +90,7 @@ class QuizRepository
         $answersArr = [];
         foreach ($quizDto->questions as $questionDto) {
             $question = [
-                'id' => $questionDto->id ? Id::fromString($questionDto->id)->toDb() : Id::createNew()->toDb(),
+                'id' => $questionDto->id ? Id::fromString($questionDto->id)->toDb() : Id::createNew()->toDb(), # TODO
                 'text' => $questionDto->text,
                 'image_src' => $questionDto->imageSrc,
                 'quiz_id' => $quizArr['id'],
@@ -97,7 +98,7 @@ class QuizRepository
 
             foreach ($questionDto->answers as $answerDto) {
                 $answersArr[] = [
-                    'id' => $answerDto->id ? Id::fromString($answerDto->id)->toDb() : Id::createNew()->toDb(),
+                    'id' => $answerDto->id ? Id::fromString($answerDto->id)->toDb() : Id::createNew()->toDb(), # TODO
                     'text' => $answerDto->text,
                     'correct' => $answerDto->correct ? 1 : 0,
                     'question_id' => $question['id'],
@@ -131,19 +132,19 @@ class QuizRepository
 
     /**
      * @param QuizDto $quizDto
-     * @return Id
+     * @return IdInterface
      * @throws QuizException
      */
-    public function update(QuizDto $quizDto): Id
+    public function update(QuizDto $quizDto): IdInterface
     {
         return $this->create($quizDto);
     }
 
     /**
-     * @param Id $id
+     * @param IdInterface $id
      * @throws QuizException
      */
-    public function delete(Id $id): void
+    public function delete(IdInterface $id): void
     {
         $this->persistence->delete($id);
     }

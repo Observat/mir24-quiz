@@ -4,20 +4,22 @@
 namespace Observatby\Mir24Quiz\Model;
 
 
+use Observatby\Mir24Quiz\IdInterface;
+
 class ReceivedQuiz
 {
-    private Id $id;
+    private IdInterface $id;
     private Quiz $quiz;
     /** @var ReceivedAnswer[] $receivedAnswers */
     private array $receivedAnswers;
 
     /**
      * ReceivedQuiz constructor.
-     * @param Id $id
+     * @param IdInterface $id
      * @param Quiz $quiz
      * @param ReceivedAnswer[] $receivedAnswers
      */
-    public function __construct(Id $id, Quiz $quiz, array $receivedAnswers)
+    public function __construct(IdInterface $id, Quiz $quiz, array $receivedAnswers)
     {
         $this->id = $id;
         $this->quiz = $quiz;

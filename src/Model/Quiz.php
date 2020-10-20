@@ -6,23 +6,24 @@ namespace Observatby\Mir24Quiz\Model;
 
 use Observatby\Mir24Quiz\Dto\QuestionDto;
 use Observatby\Mir24Quiz\Dto\QuizDto;
+use Observatby\Mir24Quiz\IdInterface;
 
 class Quiz
 {
-    private Id $id;
-    private string $title;
+    private IdInterface $id;
+    private string $title; # TODO unique? length>0?
     /** @var QuizQuestion[] $questions */
     private array $questions;
     private ?PublishingManagement $publishingManagement;
 
     /**
      * Quiz constructor.
-     * @param Id $id
+     * @param IdInterface $id
      * @param string $title
      * @param QuizQuestion[] $questions
      * @param PublishingManagement|null $publishingManagement
      */
-    public function __construct(Id $id, string $title, array $questions, ?PublishingManagement $publishingManagement = null)
+    public function __construct(IdInterface $id, string $title, array $questions, ?PublishingManagement $publishingManagement = null)
     {
         $this->id = $id;
         $this->title = $title;
@@ -33,7 +34,7 @@ class Quiz
     public static function fromDto(QuizDto $dto): self
     {
         return new self(
-            Id::fromString($dto->id),
+            Id::fromString($dto->id), # TODO
             $dto->title,
             array_map(
                 function (QuestionDto $questionDto) {
@@ -45,7 +46,7 @@ class Quiz
         );
     }
 
-    public function getId(): Id
+    public function getId(): IdInterface
     {
         return $this->id;
     }

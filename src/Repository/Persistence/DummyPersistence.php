@@ -4,7 +4,7 @@
 namespace Observatby\Mir24Quiz\Repository\Persistence;
 
 
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\Repository\ListPersistenceInterface;
 use Observatby\Mir24Quiz\Repository\PersistenceInterface;
 
@@ -21,12 +21,12 @@ class DummyPersistence implements PersistenceInterface, ListPersistenceInterface
         return [];
     }
 
-    public function retrieve(Id $id): array
+    public function retrieve(IdInterface $id): array
     {
         return [];
     }
 
-    public function delete(Id $id): void
+    public function delete(IdInterface $id): void
     {
         // dummy
     }

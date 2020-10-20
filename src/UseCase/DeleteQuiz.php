@@ -4,7 +4,7 @@
 namespace Observatby\Mir24Quiz\UseCase;
 
 
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
@@ -31,11 +31,11 @@ class DeleteQuiz
     }
 
     /**
-     * @param Id $id
+     * @param IdInterface $id
      * @param LoggerInterface|null $logger
      * @throws QuizException
      */
-    public function handle(Id $id, ?LoggerInterface $logger = null): void
+    public function handle(IdInterface $id, ?LoggerInterface $logger = null): void
     {
         try {
             $this->repository->delete($id);

@@ -5,14 +5,15 @@ namespace Observatby\Mir24Quiz\Model;
 
 
 use Observatby\Mir24Quiz\Dto\AnswerDto;
+use Observatby\Mir24Quiz\IdInterface;
 
 class QuizAnswer
 {
-    private Id $id;
+    private IdInterface $id;
     private bool $correct;
     private string $text;
 
-    public function __construct(Id $id, bool $correct, string $text)
+    public function __construct(IdInterface $id, bool $correct, string $text)
     {
         $this->id = $id;
         $this->correct = $correct;
@@ -22,12 +23,12 @@ class QuizAnswer
     public static function fromDto(AnswerDto $dto): self
     {
         return new self(
-            Id::fromString($dto->id),
+            Id::fromString($dto->id), # TODO
             $dto->correct,
             $dto->text);
     }
 
-    public function getId(): Id
+    public function getId(): IdInterface
     {
         return $this->id;
     }

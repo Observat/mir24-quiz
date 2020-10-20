@@ -5,7 +5,7 @@ namespace Observatby\Mir24Quiz\UseCase;
 
 
 use Exception;
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
@@ -35,10 +35,10 @@ class CreateNewQuiz
     /**
      * @param array $data
      * @param LoggerInterface|null $logger
-     * @return Id
+     * @return IdInterface
      * @throws QuizException
      */
-    public function handle(array $data, ?LoggerInterface $logger = null): Id
+    public function handle(array $data, ?LoggerInterface $logger = null): IdInterface
     {
         try {
             $quizDto = QuizToDto::transformFromArray($data);

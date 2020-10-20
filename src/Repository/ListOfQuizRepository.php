@@ -28,7 +28,7 @@ class ListOfQuizRepository
         $quizzes = [];
         foreach ($rows as $row) {
             $quizDto = new QuizMinForListOfQuizDto();
-            $quizDto->id = Id::fromDb($row['quiz_id'])->toString();
+            $quizDto->id = Id::fromDb($row['quiz_id'])->toString(); # TODO
             $quizDto->title = $row['quiz_title'];
             $quizDto->enabled = $row['enabled'];
             $quizDto->beginDate = $row['begin_date'] !== null ? new DateTimeImmutable($row['begin_date']) : null;

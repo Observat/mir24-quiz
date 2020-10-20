@@ -3,7 +3,7 @@
 namespace Observatby\Mir24Quiz\Repository;
 
 
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\QuizException;
 
 
@@ -15,11 +15,11 @@ interface PersistenceInterface
      */
     public function persist(array $data): void;
 
-    public function retrieve(Id $id): array;
+    public function retrieve(IdInterface $id): array;
 
     /**
-     * @param Id $id
+     * @param IdInterface $id
      * @throws QuizException
      */
-    public function delete(Id $id): void;
+    public function delete(IdInterface $id): void;
 }
