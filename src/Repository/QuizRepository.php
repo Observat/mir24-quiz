@@ -7,21 +7,23 @@ namespace Observatby\Mir24Quiz\Repository;
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\QuizDto;
 use Observatby\Mir24Quiz\IdInterface;
-use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\QuizException;
 
 class QuizRepository
 {
     private PersistenceInterface $persistence;
+    private string $idType;
 
-    public function __construct(PersistenceInterface $persistence)
+    public function __construct(PersistenceInterface $persistence, string $idType = Uuid::class)
     {
         $this->persistence = $persistence;
+        $this->idType = $idType;
     }
 
     public function findById(IdInterface $id): Quiz
@@ -40,7 +42,7 @@ class QuizRepository
             }
 
             $answers[$row['question_id']][] = new QuizAnswer(
-                Uuid::fromDb($row['answer_id']), # TODO
+                ($this->idType)::fromDb($row['answer_id']),
                 $row['answer_correct'],
                 $row['answer_text']
             );
@@ -49,7 +51,7 @@ class QuizRepository
         $questions = [];
         foreach ($questionRows as $questionId => $questionRow) {
             $questions[] = new QuizQuestion(
-                Uuid::fromDb($questionId),
+                ($this->idType)::fromDb($questionId),
                 $questionRow['text'],
                 new Image($questionRow['imageSrc']),
                 $answers[$questionId]
@@ -80,7 +82,7 @@ class QuizRepository
      */
     public function create(QuizDto $quizDto): IdInterface
     {
-        $quizId = $quizDto->id ? Uuid::fromString($quizDto->id) : Uuid::createNew(); # TODO
+        $quizId = $quizDto->id ? ($this->idType)::fromString($quizDto->id) : ($this->idType)::createNew(); # TODO
         $quizArr = [
             'id' => $quizId->toDb(),
             'title' => $quizDto->title
@@ -90,7 +92,7 @@ class QuizRepository
         $answersArr = [];
         foreach ($quizDto->questions as $questionDto) {
             $question = [
-                'id' => $questionDto->id ? Uuid::fromString($questionDto->id)->toDb() : Uuid::createNew()->toDb(), # TODO
+                'id' => $questionDto->id ? ($this->idType)::fromString($questionDto->id)->toDb() : ($this->idType)::createNew()->toDb(), # TODO
                 'text' => $questionDto->text,
                 'image_src' => $questionDto->imageSrc,
                 'quiz_id' => $quizArr['id'],
@@ -98,7 +100,7 @@ class QuizRepository
 
             foreach ($questionDto->answers as $answerDto) {
                 $answersArr[] = [
-                    'id' => $answerDto->id ? Uuid::fromString($answerDto->id)->toDb() : Uuid::createNew()->toDb(), # TODO
+                    'id' => $answerDto->id ? ($this->idType)::fromString($answerDto->id)->toDb() : ($this->idType)::createNew()->toDb(), # TODO
                     'text' => $answerDto->text,
                     'correct' => $answerDto->correct ? 1 : 0,
                     'question_id' => $question['id'],

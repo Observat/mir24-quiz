@@ -12,7 +12,7 @@ interface IdInterface
 
     public static function fromString(string $idDisplayed): self;
 
-    public function toDb(): string;
+    public function toDb();
 
     public function toString(): string;
 }

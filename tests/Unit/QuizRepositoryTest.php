@@ -3,6 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
 use DateTimeImmutable;
+use Observatby\Mir24Quiz\Model\IntId;
 use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
@@ -52,8 +53,8 @@ class QuizRepositoryTest extends TestCase
                     'answer_text' => 'answer_text1',
                     'answer_correct' => true,
                     'enabled' => 1,
-                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(\DateTimeImmutable::ISO8601),
-                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(\DateTimeImmutable::ISO8601),
+                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(DateTimeImmutable::ISO8601),
+                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(DateTimeImmutable::ISO8601),
                 ],
                 [
                     'quiz_id' => $id->toDb(),
@@ -65,13 +66,67 @@ class QuizRepositoryTest extends TestCase
                     'answer_text' => 'answer_text2',
                     'answer_correct' => false,
                     'enabled' => 1,
-                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(\DateTimeImmutable::ISO8601),
-                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(\DateTimeImmutable::ISO8601),
+                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(DateTimeImmutable::ISO8601),
+                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(DateTimeImmutable::ISO8601),
                 ],
             ]);
 
         /** @var QuizPersistence $mockPersistence */
         $repository = new QuizRepository($mockPersistence);
+
+        $quiz = $repository->findById($id);
+
+        $this->assertEquals('quiz_title', $quiz->getTitle());
+        $this->assertCount(1, $quiz->getQuestions());
+        $this->assertEquals('question_text', $quiz->getQuestions()[0]->getText());
+        $this->assertCount(2, $quiz->getQuestions()[0]->getAnswers());
+        $this->assertTrue($quiz->getQuestions()[0]->getAnswers()[0]->isCorrect());
+        $this->assertFalse($quiz->getQuestions()[0]->getAnswers()[1]->isCorrect());
+        $this->assertEquals('answer_text2', $quiz->getQuestions()[0]->getAnswers()[1]->getText());
+        $this->assertNotNull($quiz->getPublishingManagement());
+        $this->assertTrue($quiz->getPublishingManagement()->isEnabled());
+    }
+
+    public function testFindByIdWithIntId(): void
+    {
+        $id = IntId::createNew();
+        $questionId = IntId::createNew();
+
+        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence
+            ->expects($this->once())
+            ->method('retrieve')
+            ->willReturn([
+                [
+                    'quiz_id' => $id->toDb(),
+                    'quiz_title' => 'quiz_title',
+                    'question_id' => $questionId->toDb(),
+                    'question_text' => 'question_text',
+                    'question_image_src' => 'question_image_src',
+                    'answer_id' => Uuid::createNew()->toDb(),
+                    'answer_text' => 'answer_text1',
+                    'answer_correct' => true,
+                    'enabled' => 1,
+                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(DateTimeImmutable::ISO8601),
+                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(DateTimeImmutable::ISO8601),
+                ],
+                [
+                    'quiz_id' => $id->toDb(),
+                    'quiz_title' => 'quiz_title',
+                    'question_id' => $questionId->toDb(),
+                    'question_text' => 'question_text',
+                    'question_image_src' => 'question_image_src',
+                    'answer_id' => Uuid::createNew()->toDb(),
+                    'answer_text' => 'answer_text2',
+                    'answer_correct' => false,
+                    'enabled' => 1,
+                    'begin_date' => (new DateTimeImmutable('now - 1 day'))->format(DateTimeImmutable::ISO8601),
+                    'end_date' => (new DateTimeImmutable('now + 1 day'))->format(DateTimeImmutable::ISO8601),
+                ],
+            ]);
+
+        /** @var QuizPersistence $mockPersistence */
+        $repository = new QuizRepository($mockPersistence, IntId::class);
 
         $quiz = $repository->findById($id);
 
