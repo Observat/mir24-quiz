@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
 
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\ReceivedAnswer;
 use Observatby\Mir24Quiz\Model\ReceivedQuiz;
@@ -20,7 +20,7 @@ class CreateModelTest extends TestCase
     public function testCreateQuiz(): void
     {
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $this->createQuizQuestion_1(),
@@ -34,7 +34,7 @@ class CreateModelTest extends TestCase
     public function testCreateReceivedQuiz(): void
     {
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $this->createQuizQuestion_1(),
@@ -43,16 +43,16 @@ class CreateModelTest extends TestCase
         );
 
         $resQuiz = new ReceivedQuiz(
-            Id::createNew(),
+            Uuid::createNew(),
             $quiz,
             [
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $this->createQuizQuestion_1(),
                     $this->createQuizAnswer_yes_true()
                 ),
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $this->createQuizQuestion_1(),
                     $this->createQuizAnswer_no_true()
                 )

@@ -7,12 +7,12 @@ namespace Observatby\Mir24Quiz\Model;
 use Observatby\Mir24Quiz\IdInterface;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
 use Ramsey\Uuid\Generator\CombGenerator;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Uuid as RamseyUuid;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidInterface;
 
 
-class Id implements IdInterface
+class Uuid implements IdInterface
 {
     private UuidInterface $id;
 
@@ -30,12 +30,12 @@ class Id implements IdInterface
 
     public static function fromDb(string $idFromDb): self
     {
-        return new self(Uuid::fromBytes($idFromDb));
+        return new self(RamseyUuid::fromBytes($idFromDb));
     }
 
     public static function fromString(string $idDisplayed): self
     {
-        return new self(Uuid::fromString($idDisplayed));
+        return new self(RamseyUuid::fromString($idDisplayed));
     }
 
     public function toDb(): string

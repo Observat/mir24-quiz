@@ -5,7 +5,7 @@ namespace Observatby\Mir24Quiz\Tests\Unit;
 
 
 use DateTimeImmutable;
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\QuizException;
@@ -20,7 +20,7 @@ class PublishingManagementTest extends TestCase
     public function testCreateQuizWithPublishingManagement(): void
     {
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $this->createQuizQuestion_1(),

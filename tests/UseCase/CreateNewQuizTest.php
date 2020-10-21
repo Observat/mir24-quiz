@@ -3,7 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests\UseCase;
 
 use DateTimeImmutable;
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
@@ -26,24 +26,24 @@ class CreateNewQuizTest extends TestCase
 
     public function testHandle(): void
     {
-        $id = Id::createNew();
+        $id = Uuid::createNew();
 
         $data = [
             'id' => $id->toString(),
             'title' => 'New quiz',
             'questions' => [
                 [
-                    'id' => Id::createNew()->toString(),
+                    'id' => Uuid::createNew()->toString(),
                     'text' => 'question_text',
                     'imageSrc' => 'question_image_src',
                     'answers' => [
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text1',
                             'correct' => true,
                         ],
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text2',
                             'correct' => false,
                         ],
@@ -61,7 +61,7 @@ class CreateNewQuizTest extends TestCase
         $mockRepository
             ->expects($this->once())
             ->method('create')
-            ->willReturn(Id::fromString($data['id']));
+            ->willReturn(Uuid::fromString($data['id']));
 
         $createdId = CreateNewQuiz::createWithRepository($mockRepository)->handle($data);
 

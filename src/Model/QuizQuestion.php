@@ -34,7 +34,7 @@ class QuizQuestion
     public static function fromDto(QuestionDto $dto): self
     {
         return new self(
-            Id::fromString($dto->id), # TODO
+            Uuid::fromString($dto->id), # TODO
             $dto->text,
             new Image($dto->imageSrc),
             array_map(function (AnswerDto $answerDto) {

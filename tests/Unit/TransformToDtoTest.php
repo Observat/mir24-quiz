@@ -3,7 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
 use DateTimeImmutable;
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Tests\CreateQuizTrait;
@@ -17,7 +17,7 @@ class TransformToDtoTest extends TestCase
     public function testTransformQuizForUse(): void
     {
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $this->createQuizQuestion_1(),
@@ -41,7 +41,7 @@ class TransformToDtoTest extends TestCase
     public function testTransformQuizForManagement(): void
     {
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $this->createQuizQuestion_1(),
@@ -65,21 +65,21 @@ class TransformToDtoTest extends TestCase
     public function testTransformQuizFromArray(): void
     {
         $data = [
-            'id' => Id::createNew()->toString(),
+            'id' => Uuid::createNew()->toString(),
             'title' => 'quiz_title',
             'questions' => [
                 [
-                    'id' => Id::createNew()->toString(),
+                    'id' => Uuid::createNew()->toString(),
                     'text' => 'question_text',
                     'imageSrc' => 'question_image_src',
                     'answers' => [
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text1',
                             'correct' => true,
                         ],
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text2',
                             'correct' => false,
                         ],
@@ -106,21 +106,21 @@ class TransformToDtoTest extends TestCase
     public function testTransformQuizFromArrayWithEmptyDate(): void
     {
         $data = [
-            'id' => Id::createNew()->toString(),
+            'id' => Uuid::createNew()->toString(),
             'title' => 'quiz_title',
             'questions' => [
                 [
-                    'id' => Id::createNew()->toString(),
+                    'id' => Uuid::createNew()->toString(),
                     'text' => 'question_text',
                     'imageSrc' => 'question_image_src',
                     'answers' => [
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text1',
                             'correct' => true,
                         ],
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text2',
                             'correct' => false,
                         ],
@@ -147,23 +147,23 @@ class TransformToDtoTest extends TestCase
     public function testTransformQuizFromArrayWithEmptyManagement(): void
     {
         $data = [
-            'id' => Id::createNew()->toString(),
+            'id' => Uuid::createNew()->toString(),
             'title' => 'quiz_title',
             'questions' => [
                 [
-                    'id' => Id::createNew()->toString(),
+                    'id' => Uuid::createNew()->toString(),
                     'text' => 'question_text',
                     'imageSrc' => function ($questionId) {
                         return 'question_image_src_' . $questionId;
                     },
                     'answers' => [
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text1',
                             'correct' => true,
                         ],
                         [
-                            'id' => Id::createNew()->toString(),
+                            'id' => Uuid::createNew()->toString(),
                             'text' => 'answer_text2',
                             'correct' => false,
                         ],

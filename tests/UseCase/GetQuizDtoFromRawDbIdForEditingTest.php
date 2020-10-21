@@ -3,7 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests\UseCase;
 
 use DateTimeImmutable;
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
@@ -18,7 +18,7 @@ class GetQuizDtoFromRawDbIdForEditingTest extends TestCase
 
     public function testHandle(): void
     {
-        $id = Id::createNew();
+        $id = Uuid::createNew();
 
         $mockRepository = $this->createMock(QuizRepository::class);
         $mockRepository

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
 
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
@@ -30,7 +30,7 @@ class CheckReceivedQuizTest extends TestCase
         $question2 = $this->createQuizQuestion_1($answerYesFalse, $answerNoTrue);
 
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $question1,
@@ -39,16 +39,16 @@ class CheckReceivedQuizTest extends TestCase
         );
 
         $resQuizSuccess = new ReceivedQuiz(
-            Id::createNew(),
+            Uuid::createNew(),
             $quiz,
             [
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question2,
                     $answerNoTrue
                 ),
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question1,
                     $answerYesTrue
                 ),
@@ -56,16 +56,16 @@ class CheckReceivedQuizTest extends TestCase
         );
 
         $resQuizSecondFalse = new ReceivedQuiz(
-            Id::createNew(),
+            Uuid::createNew(),
             $quiz,
             [
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question1,
                     $answerYesTrue
                 ),
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question2,
                     $answerYesFalse
                 ),
@@ -73,16 +73,16 @@ class CheckReceivedQuizTest extends TestCase
         );
 
         $resQuizSecondWithOtherId = new ReceivedQuiz(
-            Id::createNew(),
+            Uuid::createNew(),
             $quiz,
             [
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question1,
                     $answerYesTrue
                 ),
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question2,
                     $this->createQuizAnswer_no_true()
                 ),
@@ -92,7 +92,7 @@ class CheckReceivedQuizTest extends TestCase
         $answer3True = $this->createQuizAnswer_yes_true();
         $answer3False = $this->createQuizAnswer_no_false();
         $question3 = new QuizQuestion(
-            Id::createNew(),
+            Uuid::createNew(),
             'This is third question?',
             new Image(''),
             [
@@ -101,21 +101,21 @@ class CheckReceivedQuizTest extends TestCase
             ]
         );
         $resQuizThreeSuccessAnswer = new ReceivedQuiz(
-            Id::createNew(),
+            Uuid::createNew(),
             $quiz,
             [
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question1,
                     $answerYesTrue
                 ),
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question2,
                     $answerNoTrue
                 ),
                 new ReceivedAnswer(
-                    Id::createNew(),
+                    Uuid::createNew(),
                     $question3,
                     $answer3True
                 ),

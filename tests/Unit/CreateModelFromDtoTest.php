@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
 
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Tests\CreateQuizTrait;
 use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
@@ -19,7 +19,7 @@ class CreateModelFromDtoTest extends TestCase
     public function testCreateQuizFromDto(): void
     {
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $this->createQuizQuestion_1(),

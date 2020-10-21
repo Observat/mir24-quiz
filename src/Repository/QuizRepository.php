@@ -7,7 +7,7 @@ namespace Observatby\Mir24Quiz\Repository;
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\QuizDto;
 use Observatby\Mir24Quiz\IdInterface;
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
@@ -40,7 +40,7 @@ class QuizRepository
             }
 
             $answers[$row['question_id']][] = new QuizAnswer(
-                Id::fromDb($row['answer_id']), # TODO
+                Uuid::fromDb($row['answer_id']), # TODO
                 $row['answer_correct'],
                 $row['answer_text']
             );
@@ -49,7 +49,7 @@ class QuizRepository
         $questions = [];
         foreach ($questionRows as $questionId => $questionRow) {
             $questions[] = new QuizQuestion(
-                Id::fromDb($questionId),
+                Uuid::fromDb($questionId),
                 $questionRow['text'],
                 new Image($questionRow['imageSrc']),
                 $answers[$questionId]
@@ -80,7 +80,7 @@ class QuizRepository
      */
     public function create(QuizDto $quizDto): IdInterface
     {
-        $quizId = $quizDto->id ? Id::fromString($quizDto->id) : Id::createNew(); # TODO
+        $quizId = $quizDto->id ? Uuid::fromString($quizDto->id) : Uuid::createNew(); # TODO
         $quizArr = [
             'id' => $quizId->toDb(),
             'title' => $quizDto->title
@@ -90,7 +90,7 @@ class QuizRepository
         $answersArr = [];
         foreach ($quizDto->questions as $questionDto) {
             $question = [
-                'id' => $questionDto->id ? Id::fromString($questionDto->id)->toDb() : Id::createNew()->toDb(), # TODO
+                'id' => $questionDto->id ? Uuid::fromString($questionDto->id)->toDb() : Uuid::createNew()->toDb(), # TODO
                 'text' => $questionDto->text,
                 'image_src' => $questionDto->imageSrc,
                 'quiz_id' => $quizArr['id'],
@@ -98,7 +98,7 @@ class QuizRepository
 
             foreach ($questionDto->answers as $answerDto) {
                 $answersArr[] = [
-                    'id' => $answerDto->id ? Id::fromString($answerDto->id)->toDb() : Id::createNew()->toDb(), # TODO
+                    'id' => $answerDto->id ? Uuid::fromString($answerDto->id)->toDb() : Uuid::createNew()->toDb(), # TODO
                     'text' => $answerDto->text,
                     'correct' => $answerDto->correct ? 1 : 0,
                     'question_id' => $question['id'],

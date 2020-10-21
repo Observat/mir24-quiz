@@ -2,7 +2,7 @@
 
 namespace Observatby\Mir24Quiz\Tests;
 
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
@@ -12,7 +12,7 @@ trait CreateQuizTrait
     private function createQuizQuestion_1(?QuizAnswer $answer1 = null, ?QuizAnswer $answer2 = null): QuizQuestion
     {
         return new QuizQuestion(
-            Id::createNew(),
+            Uuid::createNew(),
             'This first question?',
             new Image(''),
             [
@@ -25,7 +25,7 @@ trait CreateQuizTrait
     private function createQuizQuestion_2(?QuizAnswer $answer1 = null, ?QuizAnswer $answer2 = null): QuizQuestion
     {
         return new QuizQuestion(
-            Id::createNew(),
+            Uuid::createNew(),
             'This no second question?',
             new Image(''),
             [
@@ -39,7 +39,7 @@ trait CreateQuizTrait
     private function createQuizAnswer_yes_true(): QuizAnswer
     {
         return new QuizAnswer(
-            Id::createNew(),
+            Uuid::createNew(),
             true,
             'Yes'
         );
@@ -48,7 +48,7 @@ trait CreateQuizTrait
     private function createQuizAnswer_yes_false(): QuizAnswer
     {
         return new QuizAnswer(
-            Id::createNew(),
+            Uuid::createNew(),
             false,
             'Yes'
         );
@@ -57,7 +57,7 @@ trait CreateQuizTrait
     private function createQuizAnswer_no_false(): QuizAnswer
     {
         return new QuizAnswer(
-            Id::createNew(),
+            Uuid::createNew(),
             false,
             'No'
         );
@@ -66,7 +66,7 @@ trait CreateQuizTrait
     private function createQuizAnswer_no_true(): QuizAnswer
     {
         return new QuizAnswer(
-            Id::createNew(),
+            Uuid::createNew(),
             true,
             'No'
         );

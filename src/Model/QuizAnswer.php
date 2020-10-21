@@ -23,7 +23,7 @@ class QuizAnswer
     public static function fromDto(AnswerDto $dto): self
     {
         return new self(
-            Id::fromString($dto->id), # TODO
+            Uuid::fromString($dto->id), # TODO
             $dto->correct,
             $dto->text);
     }

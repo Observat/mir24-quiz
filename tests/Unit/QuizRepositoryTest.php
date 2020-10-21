@@ -3,7 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
 use DateTimeImmutable;
-use Observatby\Mir24Quiz\Model\Id;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
@@ -32,10 +32,10 @@ class QuizRepositoryTest extends TestCase
         $this->assertInstanceOf(QuizRepository::class, $repository2);
     }
 
-    public function testFindById(): void
+    public function testFindByIdWithUuid(): void
     {
-        $id = Id::createNew();
-        $questionId = Id::createNew();
+        $id = Uuid::createNew();
+        $questionId = Uuid::createNew();
 
         $mockPersistence = $this->createMock(QuizPersistence::class);
         $mockPersistence
@@ -48,7 +48,7 @@ class QuizRepositoryTest extends TestCase
                     'question_id' => $questionId->toDb(),
                     'question_text' => 'question_text',
                     'question_image_src' => 'question_image_src',
-                    'answer_id' => Id::createNew()->toDb(),
+                    'answer_id' => Uuid::createNew()->toDb(),
                     'answer_text' => 'answer_text1',
                     'answer_correct' => true,
                     'enabled' => 1,
@@ -61,7 +61,7 @@ class QuizRepositoryTest extends TestCase
                     'question_id' => $questionId->toDb(),
                     'question_text' => 'question_text',
                     'question_image_src' => 'question_image_src',
-                    'answer_id' => Id::createNew()->toDb(),
+                    'answer_id' => Uuid::createNew()->toDb(),
                     'answer_text' => 'answer_text2',
                     'answer_correct' => false,
                     'enabled' => 1,
@@ -89,7 +89,7 @@ class QuizRepositoryTest extends TestCase
     public function testCreate(): void
     {
         $quiz = new Quiz(
-            Id::createNew(),
+            Uuid::createNew(),
             'First quiz',
             [
                 $this->createQuizQuestion_1(),
@@ -110,12 +110,12 @@ class QuizRepositoryTest extends TestCase
 
         $createdId = $repository->create($quizDto);
 
-        $this->assertInstanceOf(Id::class, $createdId);
+        $this->assertInstanceOf(Uuid::class, $createdId);
     }
 
     public function testUpdate(): void
     {
-        $id = Id::createNew();
+        $id = Uuid::createNew();
         $quiz = new Quiz(
             $id,
             'First quiz',
@@ -142,7 +142,7 @@ class QuizRepositoryTest extends TestCase
 
     public function testDelete(): void
     {
-        $id = Id::createNew();
+        $id = Uuid::createNew();
 
         $mockPersistence = $this->createMock(QuizPersistence::class);
         $mockPersistence
