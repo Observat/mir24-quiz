@@ -12,7 +12,7 @@ use Observatby\Mir24Quiz\Repository\PersistenceInterface;
 use PDO;
 use PDOException;
 
-class QuizPersistence implements PersistenceInterface, ListPersistenceInterface
+class QuizWithUuidPersistence implements PersistenceInterface, ListPersistenceInterface
 {
     private PDO $pdo;
     private const QUERY_LIST = "SELECT

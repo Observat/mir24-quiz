@@ -7,7 +7,7 @@ namespace Observatby\Mir24Quiz\UseCase;
 use Exception;
 use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\QuizException;
-use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
+use Observatby\Mir24Quiz\Repository\Persistence\QuizWithUuidPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
 use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
 use PDO;
@@ -24,7 +24,7 @@ class CreateNewQuiz
 
     public static function createWithPdo(PDO $pdo): self
     {
-        return new self(new QuizRepository(new QuizPersistence($pdo)));
+        return new self(new QuizRepository(new QuizWithUuidPersistence($pdo)));
     }
 
     public static function createWithRepository(QuizRepository $repository): self

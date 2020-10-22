@@ -8,7 +8,7 @@ use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
-use Observatby\Mir24Quiz\Repository\Persistence\QuizPersistence;
+use Observatby\Mir24Quiz\Repository\Persistence\QuizWithUuidPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
 use Observatby\Mir24Quiz\Tests\CreateQuizTrait;
 use Observatby\Mir24Quiz\TransformToDto\QuizToDto;
@@ -28,7 +28,7 @@ class QuizRepositoryTest extends TestCase
 
         $mockPdo = $this->createMock(PDO::class);
         $repository2 = new QuizRepository(
-            new QuizPersistence($mockPdo)
+            new QuizWithUuidPersistence($mockPdo)
         );
         $this->assertInstanceOf(QuizRepository::class, $repository2);
     }
@@ -38,7 +38,7 @@ class QuizRepositoryTest extends TestCase
         $id = Uuid::createNew();
         $questionId = Uuid::createNew();
 
-        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence = $this->createMock(QuizWithUuidPersistence::class);
         $mockPersistence
             ->expects($this->once())
             ->method('retrieve')
@@ -71,7 +71,7 @@ class QuizRepositoryTest extends TestCase
                 ],
             ]);
 
-        /** @var QuizPersistence $mockPersistence */
+        /** @var QuizWithUuidPersistence $mockPersistence */
         $repository = new QuizRepository($mockPersistence);
 
         $quiz = $repository->findById($id);
@@ -92,7 +92,7 @@ class QuizRepositoryTest extends TestCase
         $id = IntId::createNew();
         $questionId = IntId::createNew();
 
-        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence = $this->createMock(QuizWithUuidPersistence::class);
         $mockPersistence
             ->expects($this->once())
             ->method('retrieve')
@@ -125,7 +125,7 @@ class QuizRepositoryTest extends TestCase
                 ],
             ]);
 
-        /** @var QuizPersistence $mockPersistence */
+        /** @var QuizWithUuidPersistence $mockPersistence */
         $repository = new QuizRepository($mockPersistence, IntId::class);
 
         $quiz = $repository->findById($id);
@@ -155,12 +155,12 @@ class QuizRepositoryTest extends TestCase
         $quizDto = QuizToDto::transformForChange($quiz);
         $quizDto->id = null;
 
-        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence = $this->createMock(QuizWithUuidPersistence::class);
         $mockPersistence
             ->expects($this->once())
             ->method('persist');
 
-        /** @var QuizPersistence $mockPersistence */
+        /** @var QuizWithUuidPersistence $mockPersistence */
         $repository = new QuizRepository($mockPersistence);
 
         $createdId = $repository->create($quizDto);
@@ -182,12 +182,12 @@ class QuizRepositoryTest extends TestCase
         );
         $quizDto = QuizToDto::transformForChange($quiz);
 
-        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence = $this->createMock(QuizWithUuidPersistence::class);
         $mockPersistence
             ->expects($this->once())
             ->method('persist');
 
-        /** @var QuizPersistence $mockPersistence */
+        /** @var QuizWithUuidPersistence $mockPersistence */
         $repository = new QuizRepository($mockPersistence);
 
         $createdId = $repository->update($quizDto);
@@ -199,12 +199,12 @@ class QuizRepositoryTest extends TestCase
     {
         $id = Uuid::createNew();
 
-        $mockPersistence = $this->createMock(QuizPersistence::class);
+        $mockPersistence = $this->createMock(QuizWithUuidPersistence::class);
         $mockPersistence
             ->expects($this->once())
             ->method('delete');
 
-        /** @var QuizPersistence $mockPersistence */
+        /** @var QuizWithUuidPersistence $mockPersistence */
         $repository = new QuizRepository($mockPersistence);
 
         $repository->delete($id);
