@@ -6,13 +6,13 @@ namespace Observatby\Mir24Quiz\Repository;
 
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Dto\QuizDto;
+use Observatby\Mir24Quiz\Enum\IdTypeEnum;
 use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\Model\Image;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
-use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\QuizException;
 
 class QuizRepository
@@ -20,10 +20,14 @@ class QuizRepository
     private PersistenceInterface $persistence;
     private string $idType;
 
-    public function __construct(PersistenceInterface $persistence, string $idType = Uuid::class)
+    public function __construct(PersistenceInterface $persistence, ?IdTypeEnum $idTypeEnum = null)
     {
+        if ($idTypeEnum === null) {
+            $idTypeEnum = IdTypeEnum::BYNARY_UUID();
+        }
+
         $this->persistence = $persistence;
-        $this->idType = $idType;
+        $this->idType = $idTypeEnum->getIdInterfaceClass();
     }
 
     public function findById(IdInterface $id): Quiz

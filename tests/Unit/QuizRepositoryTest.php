@@ -3,6 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests\Unit;
 
 use DateTimeImmutable;
+use Observatby\Mir24Quiz\Enum\IdTypeEnum;
 use Observatby\Mir24Quiz\Model\IntId;
 use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
@@ -126,7 +127,7 @@ class QuizRepositoryTest extends TestCase
             ]);
 
         /** @var QuizWithUuidPersistence $mockPersistence */
-        $repository = new QuizRepository($mockPersistence, IntId::class);
+        $repository = new QuizRepository($mockPersistence, IdTypeEnum::AUTOINCREMENT_INTEGER());
 
         $quiz = $repository->findById($id);
 

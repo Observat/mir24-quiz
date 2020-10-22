@@ -17,7 +17,8 @@
         "ext-pdo": "*",
         "psr/log": "^1.1",
         "ramsey/uuid": "^3",
-        "moontoast/math": "^1.2"
+        "moontoast/math": "^1.2",
+        "myclabs/php-enum": "^1.7"
     },
     "require-dev": {
         "ext-json": "*",
