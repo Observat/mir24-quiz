@@ -2,6 +2,7 @@
 
 namespace Observatby\Mir24Quiz\Tests\UseCase;
 
+use Observatby\Mir24Quiz\Enum\IdTypeEnum;
 use Observatby\Mir24Quiz\Repository\ListOfQuizRepository;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
 use Observatby\Mir24Quiz\UseCase\GetListOfQuiz;
@@ -12,7 +13,7 @@ class GetListOfQuizTest extends TestCase
 {
     public function testEmptyHandle(): void
     {
-        $listDto = GetListOfQuiz::createWithRepository(new ListOfQuizRepository(new DummyPersistence()))
+        $listDto = GetListOfQuiz::createWithRepository(new ListOfQuizRepository(new DummyPersistence(), IdTypeEnum::BINARY_UUID()))
             ->handle();
 
         $this->assertCount(0, $listDto->quizzes);

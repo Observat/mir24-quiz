@@ -3,6 +3,7 @@
 namespace Observatby\Mir24Quiz\Tests\UseCase;
 
 use DateTimeImmutable;
+use Observatby\Mir24Quiz\Enum\IdTypeEnum;
 use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\QuizException;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
@@ -15,7 +16,7 @@ class CreateNewQuizTest extends TestCase
 {
     public function testEmptyData(): void
     {
-        $repository = new QuizRepository(new DummyPersistence());
+        $repository = new QuizRepository(new DummyPersistence(), IdTypeEnum::BINARY_UUID());
         $data = [];
 
         $this->expectException(QuizException::class);

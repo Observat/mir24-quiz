@@ -21,7 +21,7 @@ class GetListOfQuiz
 
     public static function createWithPdo(PDO $pdo, IdTypeEnum $idTypeEnum): self
     {
-        return new self(new ListOfQuizRepository($idTypeEnum->getListPersistence($pdo)));
+        return new self(new ListOfQuizRepository($idTypeEnum->getListPersistence($pdo), $idTypeEnum));
     }
 
     public static function createWithRepository(ListOfQuizRepository $repository): self

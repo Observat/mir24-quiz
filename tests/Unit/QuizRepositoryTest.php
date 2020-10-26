@@ -5,9 +5,9 @@ namespace Observatby\Mir24Quiz\Tests\Unit;
 use DateTimeImmutable;
 use Observatby\Mir24Quiz\Enum\IdTypeEnum;
 use Observatby\Mir24Quiz\Model\IntId;
-use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Model\PublishingManagement;
 use Observatby\Mir24Quiz\Model\Quiz;
+use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\Repository\Persistence\DummyPersistence;
 use Observatby\Mir24Quiz\Repository\Persistence\QuizWithUuidPersistence;
 use Observatby\Mir24Quiz\Repository\QuizRepository;
@@ -23,13 +23,15 @@ class QuizRepositoryTest extends TestCase
     public function testHasCreatedQuizRepository(): void
     {
         $repository1 = new QuizRepository(
-            new DummyPersistence()
+            new DummyPersistence(),
+            IdTypeEnum::BINARY_UUID()
         );
         $this->assertInstanceOf(QuizRepository::class, $repository1);
 
         $mockPdo = $this->createMock(PDO::class);
         $repository2 = new QuizRepository(
-            new QuizWithUuidPersistence($mockPdo)
+            new QuizWithUuidPersistence($mockPdo),
+            IdTypeEnum::BINARY_UUID()
         );
         $this->assertInstanceOf(QuizRepository::class, $repository2);
     }
@@ -73,7 +75,7 @@ class QuizRepositoryTest extends TestCase
             ]);
 
         /** @var QuizWithUuidPersistence $mockPersistence */
-        $repository = new QuizRepository($mockPersistence);
+        $repository = new QuizRepository($mockPersistence, IdTypeEnum::BINARY_UUID());
 
         $quiz = $repository->findById($id);
 
@@ -162,7 +164,7 @@ class QuizRepositoryTest extends TestCase
             ->method('persist');
 
         /** @var QuizWithUuidPersistence $mockPersistence */
-        $repository = new QuizRepository($mockPersistence);
+        $repository = new QuizRepository($mockPersistence, IdTypeEnum::BINARY_UUID());
 
         $createdId = $repository->create($quizDto);
 
@@ -189,7 +191,7 @@ class QuizRepositoryTest extends TestCase
             ->method('persist');
 
         /** @var QuizWithUuidPersistence $mockPersistence */
-        $repository = new QuizRepository($mockPersistence);
+        $repository = new QuizRepository($mockPersistence, IdTypeEnum::BINARY_UUID());
 
         $createdId = $repository->update($quizDto);
 
@@ -206,7 +208,7 @@ class QuizRepositoryTest extends TestCase
             ->method('delete');
 
         /** @var QuizWithUuidPersistence $mockPersistence */
-        $repository = new QuizRepository($mockPersistence);
+        $repository = new QuizRepository($mockPersistence, IdTypeEnum::BINARY_UUID());
 
         $repository->delete($id);
     }

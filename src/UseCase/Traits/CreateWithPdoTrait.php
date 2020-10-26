@@ -19,6 +19,6 @@ trait CreateWithPdoTrait
      */
     public static function createWithPdo(PDO $pdo, IdTypeEnum $idTypeEnum): self
     {
-        return new self(new QuizRepository($idTypeEnum->getPersistence($pdo)));
+        return new self(new QuizRepository($idTypeEnum->getPersistence($pdo), $idTypeEnum));
     }
 }

@@ -18,16 +18,12 @@ use Observatby\Mir24Quiz\QuizException;
 class QuizRepository
 {
     private PersistenceInterface $persistence;
-    private IdInterface $idType;
+    private IdInterface $idInterface;
 
-    public function __construct(PersistenceInterface $persistence, ?IdTypeEnum $idTypeEnum = null)
+    public function __construct(PersistenceInterface $persistence, IdTypeEnum $idTypeEnum)
     {
-        if ($idTypeEnum === null) {
-            $idTypeEnum = IdTypeEnum::BINARY_UUID();
-        }
-
         $this->persistence = $persistence;
-        $this->idType = $idTypeEnum->getIdInterface();
+        $this->idInterface = $idTypeEnum->getIdInterface();
     }
 
     /**
@@ -51,7 +47,7 @@ class QuizRepository
             }
 
             $answers[$row['question_id']][] = new QuizAnswer(
-                ($this->idType)::fromDb($row['answer_id']),
+                ($this->idInterface)::fromDb($row['answer_id']),
                 $row['answer_correct'],
                 $row['answer_text']
             );
@@ -60,7 +56,7 @@ class QuizRepository
         $questions = [];
         foreach ($questionRows as $questionId => $questionRow) {
             $questions[] = new QuizQuestion(
-                ($this->idType)::fromDb($questionId),
+                ($this->idInterface)::fromDb($questionId),
                 $questionRow['text'],
                 new Image($questionRow['imageSrc']),
                 $answers[$questionId]
@@ -91,7 +87,7 @@ class QuizRepository
      */
     public function create(QuizDto $quizDto): IdInterface
     {
-        $quizId = $quizDto->id ? ($this->idType)::fromString($quizDto->id) : ($this->idType)::createNew(); # TODO
+        $quizId = $quizDto->id ? ($this->idInterface)::fromString($quizDto->id) : ($this->idInterface)::createNew(); # TODO
         $quizArr = [
             'id' => $quizId->toDb(),
             'title' => $quizDto->title
@@ -101,7 +97,7 @@ class QuizRepository
         $answersArr = [];
         foreach ($quizDto->questions as $questionDto) {
             $question = [
-                'id' => $questionDto->id ? ($this->idType)::fromString($questionDto->id)->toDb() : ($this->idType)::createNew()->toDb(), # TODO
+                'id' => $questionDto->id ? ($this->idInterface)::fromString($questionDto->id)->toDb() : ($this->idInterface)::createNew()->toDb(), # TODO
                 'text' => $questionDto->text,
                 'image_src' => $questionDto->imageSrc,
                 'quiz_id' => $quizArr['id'],
@@ -109,7 +105,7 @@ class QuizRepository
 
             foreach ($questionDto->answers as $answerDto) {
                 $answersArr[] = [
-                    'id' => $answerDto->id ? ($this->idType)::fromString($answerDto->id)->toDb() : ($this->idType)::createNew()->toDb(), # TODO
+                    'id' => $answerDto->id ? ($this->idInterface)::fromString($answerDto->id)->toDb() : ($this->idInterface)::createNew()->toDb(), # TODO
                     'text' => $answerDto->text,
                     'correct' => $answerDto->correct ? 1 : 0,
                     'question_id' => $question['id'],
