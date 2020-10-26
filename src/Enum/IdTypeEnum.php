@@ -7,6 +7,11 @@ use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\Model\IntId;
 use Observatby\Mir24Quiz\Model\Uuid;
 use Observatby\Mir24Quiz\QuizException;
+use Observatby\Mir24Quiz\Repository\ListPersistenceInterface;
+use Observatby\Mir24Quiz\Repository\Persistence\QuizWithIncrementIdPersistence;
+use Observatby\Mir24Quiz\Repository\Persistence\QuizWithUuidPersistence;
+use Observatby\Mir24Quiz\Repository\PersistenceInterface;
+use PDO;
 
 class IdTypeEnum extends Enum
 {
@@ -34,6 +39,40 @@ class IdTypeEnum extends Enum
                 return IntId::createNew();
             case self::BINARY_UUID:
                 return Uuid::createNew();
+            default:
+                throw new QuizException(QuizException::INCORRECT_ID_TYPE_ENUM);
+        }
+    }
+
+    /**
+     * @param PDO $pdo
+     * @return PersistenceInterface
+     * @throws QuizException
+     */
+    public function getPersistence(PDO $pdo): PersistenceInterface
+    {
+        switch ($this->getKey()) {
+            case self::AUTOINCREMENT_INTEGER:
+                return new QuizWithIncrementIdPersistence($pdo);
+            case self::BINARY_UUID:
+                return new QuizWithUuidPersistence($pdo);
+            default:
+                throw new QuizException(QuizException::INCORRECT_ID_TYPE_ENUM);
+        }
+    }
+
+    /**
+     * @param PDO $pdo
+     * @return ListPersistenceInterface
+     * @throws QuizException
+     */
+    public function getListPersistence(PDO $pdo): ListPersistenceInterface
+    {
+        switch ($this->getKey()) {
+            case self::AUTOINCREMENT_INTEGER:
+                return new QuizWithIncrementIdPersistence($pdo);
+            case self::BINARY_UUID:
+                return new QuizWithUuidPersistence($pdo);
             default:
                 throw new QuizException(QuizException::INCORRECT_ID_TYPE_ENUM);
         }

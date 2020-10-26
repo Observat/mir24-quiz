@@ -5,8 +5,8 @@ namespace Observatby\Mir24Quiz\UseCase;
 
 
 use Observatby\Mir24Quiz\Dto\ListOfQuizDto;
+use Observatby\Mir24Quiz\Enum\IdTypeEnum;
 use Observatby\Mir24Quiz\Repository\ListOfQuizRepository;
-use Observatby\Mir24Quiz\Repository\Persistence\QuizWithUuidPersistence;
 use PDO;
 
 
@@ -19,9 +19,9 @@ class GetListOfQuiz
         $this->repository = $repository;
     }
 
-    public static function createWithPdo(PDO $pdo): self
+    public static function createWithPdo(PDO $pdo, IdTypeEnum $idTypeEnum): self
     {
-        return new self(new ListOfQuizRepository(new QuizWithUuidPersistence($pdo)));
+        return new self(new ListOfQuizRepository($idTypeEnum->getListPersistence($pdo)));
     }
 
     public static function createWithRepository(ListOfQuizRepository $repository): self
