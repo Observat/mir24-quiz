@@ -18,18 +18,23 @@ use Observatby\Mir24Quiz\QuizException;
 class QuizRepository
 {
     private PersistenceInterface $persistence;
-    private string $idType;
+    private IdInterface $idType;
 
     public function __construct(PersistenceInterface $persistence, ?IdTypeEnum $idTypeEnum = null)
     {
         if ($idTypeEnum === null) {
-            $idTypeEnum = IdTypeEnum::BYNARY_UUID();
+            $idTypeEnum = IdTypeEnum::BINARY_UUID();
         }
 
         $this->persistence = $persistence;
-        $this->idType = $idTypeEnum->getIdInterfaceClass();
+        $this->idType = $idTypeEnum->getIdInterface();
     }
 
+    /**
+     * @param IdInterface $id
+     * @return Quiz
+     * @throws QuizException
+     */
     public function findById(IdInterface $id): Quiz
     {
         $rows = $this->persistence->retrieve($id);
@@ -37,7 +42,7 @@ class QuizRepository
         $answers = [];
         $questionRows = [];
         foreach ($rows as $row) {
-            if (!key_exists($row['question_id'], $questionRows)) {
+            if (!array_key_exists($row['question_id'], $questionRows)) {
                 $questionRows[$row['question_id']] = [
                     'text' => $row['question_text'],
                     'imageSrc' => $row['question_image_src'],

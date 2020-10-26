@@ -3,30 +3,39 @@
 namespace Observatby\Mir24Quiz\Enum;
 
 use MyCLabs\Enum\Enum;
+use Observatby\Mir24Quiz\IdInterface;
 use Observatby\Mir24Quiz\Model\IntId;
 use Observatby\Mir24Quiz\Model\Uuid;
+use Observatby\Mir24Quiz\QuizException;
 
 class IdTypeEnum extends Enum
 {
     private const AUTOINCREMENT_INTEGER = 'AUTOINCREMENT_INTEGER';
-    private const BYNARY_UUID = 'BYNARY_UUID';
+    private const BINARY_UUID = 'BINARY_UUID';
 
-    public static function AUTOINCREMENT_INTEGER()
+    public static function AUTOINCREMENT_INTEGER(): self
     {
         return new self(self::AUTOINCREMENT_INTEGER);
     }
 
-    public static function BYNARY_UUID()
+    public static function BINARY_UUID(): self
     {
-        return new self(self::BYNARY_UUID);
+        return new self(self::BINARY_UUID);
     }
 
-    public function getIdInterfaceClass(): string
+    /**
+     * @return IdInterface
+     * @throws QuizException
+     */
+    public function getIdInterface(): IdInterface
     {
-        $idInterfaces = [
-            self::AUTOINCREMENT_INTEGER => IntId::class,
-            self::BYNARY_UUID => Uuid::class
-        ];
-        return $idInterfaces[$this->getKey()];
+        switch ($this->getKey()) {
+            case self::AUTOINCREMENT_INTEGER:
+                return IntId::createNew();
+            case self::BINARY_UUID:
+                return Uuid::createNew();
+            default:
+                throw new QuizException(QuizException::INCORRECT_ID_TYPE_ENUM);
+        }
     }
 }
