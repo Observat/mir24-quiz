@@ -14,6 +14,7 @@ use Observatby\Mir24Quiz\Model\Quiz;
 use Observatby\Mir24Quiz\Model\QuizAnswer;
 use Observatby\Mir24Quiz\Model\QuizQuestion;
 use Observatby\Mir24Quiz\QuizException;
+use Observatby\Mir24Quiz\Repository\Persistence\QuizWithIncrementIdPersistence;
 
 class QuizRepository
 {
@@ -87,6 +88,21 @@ class QuizRepository
      */
     public function create(QuizDto $quizDto): IdInterface
     {
+        if ($this->persistence instanceof QuizWithIncrementIdPersistence) {
+            $persistedId = $this->persistence->insertIncrementally($quizDto);
+            return ($this->idInterface)::fromString((string)$persistedId);
+        }
+
+        return $this->update($quizDto);
+    }
+
+    /**
+     * @param QuizDto $quizDto
+     * @return IdInterface
+     * @throws QuizException
+     */
+    public function update(QuizDto $quizDto): IdInterface
+    {
         $quizId = $quizDto->id ? ($this->idInterface)::fromString($quizDto->id) : ($this->idInterface)::createNew(); # TODO
         $quizArr = [
             'id' => $quizId->toDb(),
@@ -127,24 +143,14 @@ class QuizRepository
             $management['endDatetime'] = $managementDto->endDate ? $managementDto->endDate->format("Y-m-d H:i:s") : null;
         }
 
-        $this->persistence->persist([
+        $persistedId = $this->persistence->persist([
             'quiz' => $quizArr,
             'questions' => $questionsArr,
             'answers' => $answersArr,
             'management' => $management,
         ]);
 
-        return $quizId;
-    }
-
-    /**
-     * @param QuizDto $quizDto
-     * @return IdInterface
-     * @throws QuizException
-     */
-    public function update(QuizDto $quizDto): IdInterface
-    {
-        return $this->create($quizDto);
+        return $persistedId ? ($this->idInterface)::fromString($persistedId) : $quizId;
     }
 
     /**

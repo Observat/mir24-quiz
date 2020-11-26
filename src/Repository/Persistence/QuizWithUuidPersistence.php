@@ -34,7 +34,6 @@ class QuizWithUuidPersistence implements PersistenceInterface, ListPersistenceIn
             ) {
                 $dbh->commit();
             } else {
-                $dbh->rollBack();
                 throw new QuizException(QuizException::NOT_CREATED_IN_DATABASE);
             }
         } catch (Exception $e) {

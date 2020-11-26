@@ -13,7 +13,7 @@ interface PersistenceInterface
      * @param array $data
      * @throws QuizException
      */
-    public function persist(array $data): void;
+    public function persist(array $data);
 
     public function retrieve(IdInterface $id): array;
 

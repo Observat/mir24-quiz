@@ -9,21 +9,16 @@ use Observatby\Mir24Quiz\IdInterface;
 
 class IntId implements IdInterface
 {
-    private int $id;
+    private ?int $id;
 
-    private function __construct(int $id)
+    private function __construct(?int $id)
     {
         $this->id = $id;
     }
 
-    public function isGeneratedInDatabase(): bool
-    {
-        return true;
-    }
-
     public static function createNew(): self
     {
-        return new self(0); # TODO
+        return new self(null);
     }
 
     public static function fromDb(string $idFromDb): self
@@ -36,7 +31,7 @@ class IntId implements IdInterface
         return new self((int)$idDisplayed);
     }
 
-    public function toDb(): int
+    public function toDb(): ?int
     {
         return $this->id;
     }
